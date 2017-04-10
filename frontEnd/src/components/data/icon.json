@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "iconSource": " fa-500px"
+  }, {
+    "id": 2,
+    "iconSource": "fa-amazon"
+  }, {
+    "id": 3,
+    "iconSource": "fa-balance-scale"
+  }, {
+    "id": 4,
+    "iconSource": "fa-battery-0 (alias)"
+  }, {
+    "id": 5,
+    "iconSource": "fa-battery-1 (alias)"
+  }, {
+    "id": 6,
+    "iconSource": "fa-battery-2 (alias)"
+  }, {
+    "id": 7,
+    "iconSource": "fa-battery-3 (alias)"
+  }, {
+    "id": 8,
+    "iconSource": "fa-battery-empty"
+  }, {
+    "id": 9,
+    "iconSource": "fa-battery-full"
+  }, {
+    "id": 10,
+    "iconSource": "fa-battery-half"
+  }, {
+    "id": 11,
+    "iconSource": "fa-battery-quarter"
+  }
+]
