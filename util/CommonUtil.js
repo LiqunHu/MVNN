@@ -1,5 +1,6 @@
 const log4js = require('log4js');
 const config = require('../config');
+const Error = require('./Error');
 
 // common response
 function sendData(req, res, data) {
@@ -12,13 +13,21 @@ function sendData(req, res, data) {
     res.send(sendData);
 }
 
-function sendError(req, res, errno, msg) {
-    let errnores = arguments[2] ? arguments[2] : 1;
+function sendError(req, res, errno) {
+    let errnores = arguments[2] ? arguments[2] : -1;
     let msgres = arguments[3] ? arguments[3] : 'error';
-    let sendData = {
-        errno: errnores,
-        msg: msgres
-    };
+    let sendData;
+    if(errnores in Error){
+        sendData = {
+            errno: errnores,
+            msg: Error[errnores]
+        };
+    } else {
+        sendData = {
+            errno: errnores,
+            msg: '错误未配置'
+        };
+    }
     res.send(sendData);
 }
 

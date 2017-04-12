@@ -8,19 +8,19 @@ const GLBConfig = require('../util/GLBConfig');
 exports.AuthResource = async(req, res) => {
     let doc = req.body;
     if (!('domain' in doc)) {
-        common.sendError(req, res, 1, 'domain is missing');
+        common.sendError(req, res, 'auth_01');
         return
     }
     if (!('username' in doc)) {
-        common.sendError(req, res, 1, 'username is missing');
+        common.sendError(req, res, 'auth_02');
         return
     }
     if (!('identifyCode' in doc)) {
-        common.sendError(req, res, 1, 'identifyCode is missing');
+        common.sendError(req, res, 'auth_03');
         return
     }
     if (!('magicNo' in doc)) {
-        common.sendError(req, res, 1, 'magicNo is missing');
+        common.sendError(req, res, 'auth_04');
         return
     }
 
@@ -34,12 +34,12 @@ exports.AuthResource = async(req, res) => {
             }
         });
         if (user == null) {
-            common.sendError(req, res, 1, '用户不存在或密码错误');
+            common.sendError(req, res, 'auth_05');
             return
         }
         let decrypted = await Security.aesDecryptModeCFB(doc.identifyCode, user.password, doc.magicNo)
         if (decrypted != doc.username) {
-            common.sendError(req, res, 1, '用户不存在或密码错误');
+            common.sendError(req, res, 'auth_05');
             return
         } else {
             let session_token = await Security.user2token(user, doc.identifyCode, doc.magicNo)
