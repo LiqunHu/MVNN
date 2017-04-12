@@ -20,16 +20,16 @@
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img :src="userinfo['headImg']" class="user-image" alt="User Image">
-                <span class="hidden-xs">{{ userinfo['groupName'] }}</span>
+                <img :src="userinfo['avatar']" class="user-image" alt="User Image">
+                <span class="hidden-xs">{{ userinfo['description'] }}</span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img :src="userinfo['headImg']" class="img-circle" alt="User Image">
+                  <img :src="userinfo['avatar']" class="img-circle" alt="User Image">
 
                   <p>
-                    {{ userinfo['groupName'] }}  - {{ userinfo['role'] }}
+                    {{ userinfo['description'] }}  - {{ userinfo['role'] }}
                     <small>Member since {{ userinfo['makedate'] }}</small>
                   </p>
                 </li>

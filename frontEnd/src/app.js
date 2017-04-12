@@ -1,8 +1,7 @@
-var Vue = require('vue')
-var VueResource = require('vue-resource')
-var appEntry = require('./main')
-var common = require('commonFunc')
-import 'babel-polyfill'
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+import appEntry from './main'
+import common from 'commonFunc'
 import { mapGetters, mapActions } from 'vuex'
 import router from './routes';
 import store from './store'

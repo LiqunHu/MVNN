@@ -38,7 +38,7 @@ config.plugins = (config.plugins || []).concat([
   new HtmlWebpackPlugin({
     filename: '../index.html',
     template: 'src/index.ejs',
-    title: 'PutBox',
+    title: 'test',
     minify: {
       removeComments: true,
       collapseWhitespace: true

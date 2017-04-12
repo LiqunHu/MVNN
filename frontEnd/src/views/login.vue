@@ -60,7 +60,7 @@ export default{
   methods: {
     login: function (event) {
       var encInfo = common.aesEncryptModeCFB(this.username, this.password)
-      this.$http.post('/api/auth', { username: this.username, identifyCode: encInfo[1], magicNo: encInfo[0] }).then((response) => {
+      this.$http.post('/api/auth', { domain: 'admin',username: this.username, identifyCode: encInfo[1], magicNo: encInfo[0] }).then((response) => {
         var token = response.headers.get('authorization')
 
         if (token) {

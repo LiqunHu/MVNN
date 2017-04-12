@@ -37,8 +37,8 @@ var config = {
         }
     },
     // SECRET_KEY
-    SECRET_KEY: 'zc7#_66#g%u2n$j_)j$-r(swt63d(2l%wc2y=wqt_m8kpy%04*'
-
+    SECRET_KEY: 'zc7#_66#g%u2n$j_)j$-r(swt63d(2l%wc2y=wqt_m8kpy%04*',
+    TOKEN_AGE: 86400
 };
 
 module.exports = config;

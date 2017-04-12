@@ -23,24 +23,50 @@ app.set('view engine', 'html');
 
 app.use(express.static(path.join(__dirname, 'public')));
 //app.use(logger('dev'));
-app.use(log4js.connectLogger(log4js.getLogger("http"), { level: 'auto' }));
+app.use(log4js.connectLogger(log4js.getLogger("http"), {
+    level: 'auto'
+}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(cookieParser());
-app.use(authority.AuthMiddleware);
+app.use('/api', authority.AuthMiddleware);
 
 //处理webpack服务请求
 app.get('/__webpack_hmr', function(req, res) {
-  res.send('')
+    res.send('')
 })
+
+app.get('/', (req, res) => {
+    res.redirect('index.html');
+});
 
 app.post('/api/auth', services.AuthSRV.AuthResource);
 app.post('/api/system/groupcontrol', services.GroupControlSRV.GroupControlResource);
 
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.send({
+            message: err.message,
+            error: err
+        })
+    });
+}
+
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.send({
+        message: err.message,
+        error: {}
+    });
 });
 
 module.exports = app;
