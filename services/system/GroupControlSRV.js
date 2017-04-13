@@ -4,7 +4,6 @@ const logger = common.createLogger('GroupControlSRV.js');
 const model = require('../../model');
 
 exports.GroupControlResource = async(req, res) => {
-    logger.info(model)
     let Domain = model.domain;
 
     try {

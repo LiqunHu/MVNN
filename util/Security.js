@@ -105,7 +105,7 @@ exports.aesDecryptModeCFB = (msg, pwd, magicNo) => {
   return decrypted
 }
 
-exports.user2token = async(user, identifyCode, magicNo) => {
+exports.user2token = (user, identifyCode, magicNo) => {
     try {
         let expires = Date.now() + config.TOKEN_AGE;
         let s = [user.id, identifyCode, expires.toString(), config.SECRET_KEY];

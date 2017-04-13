@@ -37,14 +37,14 @@ exports.AuthResource = async(req, res) => {
             common.sendError(req, res, 'auth_05');
             return
         }
-        let decrypted = await Security.aesDecryptModeCFB(doc.identifyCode, user.password, doc.magicNo)
+        let decrypted = Security.aesDecryptModeCFB(doc.identifyCode, user.password, doc.magicNo)
         if (decrypted != doc.username) {
             common.sendError(req, res, 'auth_05');
             return
         } else {
-            let session_token = await Security.user2token(user, doc.identifyCode, doc.magicNo)
+            let session_token = Security.user2token(user, doc.identifyCode, doc.magicNo)
             res.append('authorization', session_token);
-            let loginData = await loginInit(user);
+            let loginData = loginInit(user);
             common.sendData(req, res, loginData);
             return
         }
@@ -102,7 +102,7 @@ async function iterationMenu(GroupID, fMenuID) {
     for (let m of menus) {
         let sub_menu = [];
         if (m.type === GLBConfig.MTYPE_ROOT) {
-            sub_menu = await iterationMenu(GroupID, m.id);
+            sub_menu = iterationMenu(GroupID, m.id);
         } else {
             return_list.push({
                 'type': m.type,
