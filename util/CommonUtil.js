@@ -3,8 +3,8 @@ const config = require('../config');
 const Error = require('./Error');
 
 // common response
-function sendData(req, res, data) {
-    let datares = arguments[2] ? arguments[2] : {};
+function sendData(res, data) {
+    let datares = arguments[1] ? arguments[1] : {};
     let sendData = {
         errno: 0,
         msg: 'ok',
@@ -13,9 +13,9 @@ function sendData(req, res, data) {
     res.send(sendData);
 }
 
-function sendError(req, res, errno) {
-    let errnores = arguments[2] ? arguments[2] : -1;
-    let msgres = arguments[3] ? arguments[3] : 'error';
+function sendError(res, errno) {
+    let errnores = arguments[1] ? arguments[1] : -1;
+    let msgres = arguments[2] ? arguments[2] : 'error';
     let sendData;
     if(errnores in Error){
         sendData = {
@@ -31,8 +31,8 @@ function sendError(req, res, errno) {
     res.send(sendData);
 }
 
-function sendFault(req, res, msg) {
-    let msgres = arguments[2] ? arguments[2] : 'Internal Error';
+function sendFault(res, msg) {
+    let msgres = arguments[1] ? arguments[1] : 'Internal Error';
     let sendData = {};
     if (process.env.NODE_ENV === 'test') {
         sendData = {

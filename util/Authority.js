@@ -37,7 +37,7 @@ exports.AuthMiddleware = async (req, res, next) => {
         }
     } catch (error) {
         logger.error(error);
-        common.sendFault(req, res, error);
+        common.sendFault(res, error);
     }
     next();
 }

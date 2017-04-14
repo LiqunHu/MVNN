@@ -1,4 +1,6 @@
 module.exports = {
+    group_01: '用户组已存在',
+    group_02: '用户组不存在',
     auth_01: 'domain is missing',
     auth_02: 'username is missing',
     auth_03: 'identifyCode is missing',

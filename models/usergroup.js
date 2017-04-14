@@ -5,11 +5,14 @@ module.exports = db.defineModel('tbl_usergroup', {
         type: db.ID,
         allowNull: false
     },
-    type: {
-        type: db.STRING(30),
-        allowNull: true
+    name: {
+        type: db.STRING(50),
+        allowNull: false
     },
-    description: db.STRING(200)
+    type: {
+        type: db.STRING(3),
+        allowNull: true
+    }
 }, {
     timestamps: true,
 });

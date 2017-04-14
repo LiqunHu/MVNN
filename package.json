@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node --use-strict ./bin/www",
-    "start:strict": "node --use-strict ./bin/www"
+    "debug": "node --use-strict ./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.17.1",
