@@ -95,7 +95,7 @@ exports.dealErrorCommon = function(obj,response) {
     BootstrapDialog.show({
       title: '<i class= "fa fa-fw fa-info-circle"></i><strong>错误信息</strong>',
       cssClass: 'modal-danger',
-      message: '<i class="text-warning fa fa-fw fa-warning" style="font-size: 40px"></i>' + response.data.description,
+      message: '<i class="text-warning fa fa-fw fa-warning" style="font-size: 40px"></i>' + response.data.msg,
       buttons: [{
         label: '<i class= "fa fa-fw fa-close"></i>关闭',
         cssClass: 'btn-outline',
@@ -117,7 +117,7 @@ exports.dealErrorCommon = function(obj,response) {
 exports.dealAlertCommon = function(obj,response) {
   if (response.status > 699 && response.status < 800) {
     console.log('700 error')
-    alert(response.data.description)
+    alert(response.data.msg)
   } else if (response.status > 401) {
     obj.$router.push({ path: '/system/error401'})
   } else{
@@ -475,8 +475,8 @@ exports.urlsUpload = function (_self, url) {
 
 exports.rowModify = function (_self, apiUrl, row, key) {
   _self.$http.post(apiUrl + 'modify', { 'old': _self.oldRow, 'new': row }).then((response) => {
-    var updaterow = response.data['data']
-    $('#table').bootstrapTable('updateByUniqueId', { id: updaterow[key], row: updaterow })
+    var updaterow = response.data.data
+    console.log(updaterow);
     console.log('modify success')
   }, (response) => {
     console.log('modify error')

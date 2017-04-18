@@ -45,7 +45,6 @@ exports.AuthResource = async(req, res) => {
             let session_token = Security.user2token(user, doc.identifyCode, doc.magicNo)
             res.append('authorization', session_token);
             let loginData = await loginInit(user);
-            console.log(JSON.stringify(loginData));
             common.sendData(res, loginData);
             return
         }

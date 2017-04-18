@@ -1,5 +1,6 @@
 const CryptoJS = require('crypto-js');
 const db = require('../db');
+const GLBConfig = require('../util/GLBConfig');
 
 module.exports = db.defineModel('tbl_user', {
     domain_id: {
@@ -35,7 +36,7 @@ module.exports = db.defineModel('tbl_user', {
     },
     gender: {
         type: db.STRING(1),
-        defaultValue: '1'
+        defaultValue: GLBConfig.AUTH
     },
     avatar: {
         type: db.STRING(200),

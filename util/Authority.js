@@ -23,7 +23,7 @@ exports.AuthMiddleware = async (req, res, next) => {
         let patha = req.path.split('/')
         let func = patha[patha.length - 1].toUpperCase()
         if (!(func in menus)) {
-            let user = Security.token2user(req)
+            let user = await Security.token2user(req)
 
             if (user == null) {
                 logger.info('UNAUTHORIZED')
@@ -31,6 +31,7 @@ exports.AuthMiddleware = async (req, res, next) => {
                     errno: -1,
                     msg: 'Auth Failed or session expired',
                 });
+                return
             }
 
             req.user = user

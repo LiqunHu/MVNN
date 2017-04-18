@@ -28,12 +28,13 @@ function sendError(res, errno) {
             msg: '错误未配置'
         };
     }
-    res.send(sendData);
+    res.status(700).send(sendData);
 }
 
 function sendFault(res, msg) {
     let msgres = arguments[1] ? arguments[1] : 'Internal Error';
     let sendData = {};
+    console.log(msg);
     if (process.env.NODE_ENV === 'test') {
         sendData = {
             errno: -1,

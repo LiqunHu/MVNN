@@ -3,6 +3,8 @@ module.exports = {
     MTYPE_LEAF: '01',
     GTYPE_ADMINISTRATOR: '00',
     GTYPE_OPERATORGROUP: '01',
+    AUTH: '1',
+    NOAUTH: '0',
     ENABLE: '1',
     DISABLE: '0',
     STSTUSINFO: [{

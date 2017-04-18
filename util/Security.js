@@ -42,7 +42,7 @@ exports.token2user = async(req) => {
 
         let idf = aesEncryptModeCFB(user.username, user.password, magicNo)
         let s = [uid, idf, expires, config.SECRET_KEY].join('-')
-        if (sha1 != CryptoJS.SHA1(s)) {
+        if (sha1 != CryptoJS.SHA1(s).toString()) {
             logger.info('invalid sha1');
             return null;
         }
@@ -57,17 +57,15 @@ exports.token2user = async(req) => {
 
         // auth control
         let menus = {};
-        for (m in menuList) {
+        for (let m of menuList) {
             let ma = m.menu_path.split('/');
-            menus[ma[ma.length - 1].toUpperCase()] = m.auth_flag
+            menus[ma[ma.length - 1].toUpperCase()] = ''
         }
 
-        let patha = req.baseUrl.split('/')
+        let patha = req.path.split('/')
         let func = patha[patha.length - 1].toUpperCase()
         if (func in menus) {
-            if (menus[func] === 1) {
-                return user;
-            }
+            return user;
         }
         return null;
     } catch (error) {
@@ -86,7 +84,7 @@ function generateRandomAlphaNum(len) {
 }
 
 function aesEncryptModeCFB(msg, pwd, magicNo) {
-    let key = CryptoJS.enc.Hex.parse(CryptoJS.MD5(pwd).toString())
+    let key = CryptoJS.enc.Hex.parse(pwd)
     let iv = CryptoJS.enc.Hex.parse(magicNo)
 
     let identifyCode = CryptoJS.AES.encrypt(msg, key, {
@@ -108,8 +106,8 @@ exports.aesDecryptModeCFB = (msg, pwd, magicNo) => {
 exports.user2token = (user, identifyCode, magicNo) => {
     try {
         let expires = Date.now() + config.TOKEN_AGE;
-        let s = [user.id, identifyCode, expires.toString(), config.SECRET_KEY];
-        let L = [user.id, magicNo, expires.toString(), CryptoJS.SHA1(s)]
+        let s = [user.id, identifyCode, expires.toString(), config.SECRET_KEY].join('-');
+        let L = [user.id, magicNo, expires.toString(), CryptoJS.SHA1(s).toString()]
         return L.join('-')
     } catch (error) {
         logger.error(error);
