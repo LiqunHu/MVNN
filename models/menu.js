@@ -14,8 +14,14 @@ module.exports = db.defineModel('tbl_menu', {
         defaultValue: '1' // 1 need auth, 0 not
     },
     menu_name: db.STRING(100),
-    menu_path: db.STRING(100),
-    menu_icon: db.STRING(100),
+    menu_path: {
+        type: db.STRING(100),
+        allowNull: true
+    },
+    menu_icon: {
+        type: db.STRING(100),
+        allowNull: true
+    },
     menu_index: {
         type: db.INTEGER,
         allowNull: false

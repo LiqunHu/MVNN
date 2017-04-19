@@ -66,9 +66,6 @@ export default {
     }
   },
   name: 'groupControl',
-  route: {
-    canReuse: false
-  },
   mounted: function () {
     var _self = this
     var $table = $('#table')

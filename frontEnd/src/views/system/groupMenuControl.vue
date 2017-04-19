@@ -12,9 +12,8 @@
             <div class="box-body">
               <div id="toolbar" class="pull-right">
                 <div class="form-inline" role="form">
-                  <div class="form-group">
-                    <label>菜单组</label>
-                    <select class="form-control select2" style="width: 200px" name="userGroupID" id="userGroupID">
+                  <div class="form-group" style="width:200px">
+                    <select class="form-control select2" multiple style="width:100%" id="userGroupID">
                     </select>
                   </div>
                   <div class="form-group">
@@ -33,13 +32,13 @@
 </template>
 <script>
 import $ from 'jquery'
-var common = require('commonFunc')
-var apiUrl = '/api/system/groupmenucontrol?method='
+const common = require('commonFunc')
+const apiUrl = '/api/system/groupmenucontrol?method='
 
 function menuNameFormatter (value, row) {
   var formatValue = ''
-  if (row.menuType === '00') {
-    formatValue = '<span class="glyphicon glyphicon-minus" v-on:click="showChild"><i class="hidden">' + row.menuID + '</i></span>' + value
+  if (row.type === '00') {
+    formatValue = '<span class="glyphicon glyphicon-minus" v-on:click="showChild"><i class="hidden">' + row.menu_id + '</i></span>' + value
   } else {
     formatValue = '<span class="indent"></span><span class="indent"></span>' + value
   }
@@ -49,17 +48,14 @@ function menuNameFormatter (value, row) {
 export default {
   data: function () {
     return {
-      pagePara: '',
-      tableData: ''
+      pagePara: {},
+      tableData: {}
     }
   },
   name: 'groupMenuControl',
-  route: {
-    canReuse: false
-  },
   mounted: function () {
-    var _self = this
-    var $menuTable = $('#menuTable')
+    let _self = this
+    let $menuTable = $('#menuTable')
 
     function initTable () {
       $menuTable.bootstrapTable({
@@ -67,40 +63,29 @@ export default {
         columns: [{
           field: 'state',
           checkbox: true
-        }, {
-          field: 'menuID',
-          align: 'center',
-          visible: false
-        }, {
-          field: 'menuName',
-          align: 'left',
-          title: '菜单名',
-          formatter: menuNameFormatter
-        }, {
-          field: 'menuPath',
-          align: 'left',
-          title: '功能路径'
-        }, {
-          field: 'menuIcon',
-          align: 'left',
-          title: '菜单图标'
-        }, {
-          field: 'menuIdx',
-          align: 'center',
-          title: '显示序号'
-        }],
-        idField: 'menuID',
-        uniqueId: 'menuID',
+        },
+        {
+            field: 'menu_name',
+            align: 'left',
+            title: '菜单名',
+            formatter: menuNameFormatter,
+        },
+        common.BTRowFormat('menu_path', '功能路径'),
+        common.BTRowFormat('menu_icon', '菜单图标'),
+        common.BTRowFormat('menu_index', '显示序号')
+        ],
+        idField: 'menu_id',
+        uniqueId: 'menu_id',
         toolbar: '#toolbar',
         striped: true,
         onCheck: function (row, $element) {
-          if (row.menuType === '01') {
+          if (row.type === '01') {
             for (let i = 0; i < _self.tableData.length; i++) {
-              if (_self.tableData[i].menuID === row.fMenuID) {
-                _self.tableData[i]['state'] = true
+              if (_self.tableData[i].menu_id === row.f_menu_id) {
+                _self.tableData[i].state = true
               }
-              if (_self.tableData[i].menuID === row.menuID) {
-                _self.tableData[i]['state'] = true
+              if (_self.tableData[i].menu_id === row.menu_id) {
+                _self.tableData[i].state = true
               }
             }
           }
@@ -109,13 +94,13 @@ export default {
           })
         },
         onUncheck: function (row, $element) {
-          if (row.menuType === '00') {
+          if (row.type === '00') {
             for (let i = 0; i < _self.tableData.length; i++) {
-              if (_self.tableData[i].fMenuID === row.menuID) {
-                _self.tableData[i]['state'] = false
+              if (_self.tableData[i].f_menu_id === row.menu_id) {
+                _self.tableData[i].state = false
               }
-              if (_self.tableData[i].menuID === row.menuID) {
-                _self.tableData[i]['state'] = false
+              if (_self.tableData[i].menu_id === row.menu_id) {
+                _self.tableData[i].state = false
               }
             }
           }
@@ -129,22 +114,24 @@ export default {
 
     function initPage () {
       _self.$http.post(apiUrl + 'init', {}).then((response) => {
-        var retData = response.data['data']
+        let retData = response.data.data
         for (let i = 0; i < retData.menuInfo.length; i++) {
-          retData.menuInfo[i]['state'] = false
+          retData.menuInfo[i].state = false
         }
-        _self.pagePara = $.extend(true, {}, retData)
-        common.initSelect2SingleWithSearch($('#userGroupID'), retData['groupInfo'])
+        _self.pagePara = JSON.parse(JSON.stringify(retData))
+        _self.tableData = JSON.parse(JSON.stringify(retData.menuInfo))
+        common.initSelect2($('#userGroupID'), retData['groupInfo'])
         $('#userGroupID').on('select2:select', function (evt) {
           getCheckData()
           $('#modify').prop('disabled', false)
         })
 
+        initTable()
+
         $('#menuTable').bootstrapTable('load', {
           data: retData.menuInfo
         })
 
-        initTable()
         common.reSizeCall()
         console.log('init success')
       }, (response) => {
@@ -154,18 +141,18 @@ export default {
     }
 
     function getCheckData () {
-      var userGroupID = $('#userGroupID').val()
-      _self.$http.post(apiUrl + 'searchCheck', { 'userGroupID': userGroupID }).then((response) => {
-        var retData = response.data['data']
-        var menuInfo = $.extend(true, [], _self.pagePara.menuInfo)
+      let userGroupID = $('#userGroupID').val()
+      _self.$http.post(apiUrl + 'search', { usergroup_id: userGroupID[0] }).then((response) => {
+        let retData = response.data.data
+        let menuInfo = JSON.parse(JSON.stringify(_self.pagePara.menuInfo))
         for (let i = 0; i < retData.groupMenu.length; i++) {
           for (let j = 0; j < menuInfo.length; j++) {
-            if (retData.groupMenu[i] === menuInfo[j].menuID) {
-              menuInfo[j]['state'] = true
+            if (retData.groupMenu[i] === menuInfo[j].id) {
+              menuInfo[j].state = true
             }
           }
         }
-        _self.tableData = $.extend(true, [], menuInfo)
+        _self.tableData = JSON.parse(JSON.stringify(menuInfo))
         $('#menuTable').bootstrapTable('load', {
           data: menuInfo
         })
@@ -182,21 +169,21 @@ export default {
   },
   methods: {
     showChild: function (event) {
-      var $menuTable = $('#menuTable')
-      var iconTarget = $(event.currentTarget)
-      var parentMenuID = parseInt(iconTarget.find('i').first().text())
-      var tableData = $menuTable.bootstrapTable('getData')
+      let $menuTable = $('#menuTable')
+      let iconTarget = $(event.currentTarget)
+      let parentMenuID = parseInt(iconTarget.find('i').first().text())
+      let tableData = $menuTable.bootstrapTable('getData')
       if (iconTarget.hasClass('glyphicon-minus')) {
         iconTarget.removeClass('glyphicon-minus').addClass('glyphicon-plus')
-        for (var indexH = 0; indexH < tableData.length; indexH++) {
-          if (tableData[indexH].fMenuID === parentMenuID) {
+        for (let indexH = 0; indexH < tableData.length; indexH++) {
+          if (tableData[indexH].f_menu_id === parentMenuID) {
             $menuTable.bootstrapTable('hideRow', { index: indexH })
           }
         }
       } else {
         iconTarget.removeClass('glyphicon-plus').addClass('glyphicon-minus')
-        for (var indexE = 0; indexE < tableData.length; indexE++) {
-          if (tableData[indexE].fMenuID === parentMenuID) {
+        for (let indexE = 0; indexE < tableData.length; indexE++) {
+          if (tableData[indexE].f_menu_id === parentMenuID) {
             $menuTable.bootstrapTable('showRow', { index: indexE })
           }
         }
@@ -204,12 +191,12 @@ export default {
       $menuTable.bootstrapTable('resetView')
     },
     modify: function (event) {
-      var userGroupID = $('#userGroupID').val()
+      let userGroupID = $('#userGroupID').val()
       if (!userGroupID) {
         common.dealPromptCommon('未选定用户组，不能分配菜单')
       } else {
-        var menuTableData = $('#menuTable').bootstrapTable('getSelections')
-        this.$http.post(apiUrl + 'modify', { 'userGroupID': userGroupID, 'userGroupMenu': menuTableData }).then((response) => {
+        let menuTableData = $('#menuTable').bootstrapTable('getSelections')
+        this.$http.post(apiUrl + 'modify', { 'usergroup_id': userGroupID[0], 'userGroupMenu': menuTableData }).then((response) => {
           common.dealPromptCommon('选定用户组的菜单已分配，请重新登录查看')
         }, (response) => {
           // error callback

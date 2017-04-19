@@ -43,7 +43,9 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/auth', services.AuthSRV.AuthResource);
-app.post('/api/system/groupcontrol', services.GroupControlSRV.GroupControlResource);
+app.post('/api/system/groupControl', services.GroupControlSRV.GroupControlResource);
+app.post('/api/system/menuControl', services.MenuControlSRV.MenuControlResource);
+app.post('/api/system/groupMenuControl', services.GroupMenuControlSRV.GroupMenuControlResource);
 
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

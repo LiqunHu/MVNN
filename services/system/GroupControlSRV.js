@@ -90,7 +90,6 @@ async function modifyAct(req, res) {
             usergroup.name = doc.new.name
             usergroup.state = doc.new.state
             await usergroup.save()
-            console.log(usergroup);
             common.sendData(res, usergroup)
         } else {
             common.sendError(res, 'group_02')

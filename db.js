@@ -26,8 +26,8 @@ var sequelize = new Sequelize(config.database, config.username, config.password,
 const ID_TYPE = Sequelize.STRING(50);
 
 function defineModel(name, attributes, params) {
-    var attrs = {};
-    var tbpara = arguments[2] ? arguments[2] : {};
+    let attrs = {};
+    let tbpara = arguments[2] ? arguments[2] : {};
 
     attrs.id = {
         type: ID_TYPE,
@@ -101,7 +101,7 @@ function defineModel(name, attributes, params) {
 
 const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATEONLY', 'BOOLEAN'];
 
-var exp = {
+let exp = {
     defineModel: defineModel,
     sync: () => {
         // only allow create ddl in non-production environment:

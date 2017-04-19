@@ -4,6 +4,8 @@ module.exports = {
     group_02: '用户组不存在',
     group_03: '用户组下存在用户',
     menu_01: '菜单已经存在',
+    menu_02: '菜单不存在',
+    menu_03: '菜单下有子项',
     auth_01: 'domain is missing',
     auth_02: 'username is missing',
     auth_03: 'identifyCode is missing',

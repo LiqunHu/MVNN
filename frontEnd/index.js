@@ -1,7 +1,7 @@
-var express = require('express')
-var path = require('path')
-var app = express()
-var favicon = require('express-favicon')
+const express = require('express')
+const path = require('path')
+const app = express()
+const favicon = require('express-favicon')
 
 app.use('/webstatic', express.static(path.join(__dirname, './dist/static/')))
 app.use('/data', express.static(path.join(__dirname, './src/data')))
@@ -13,10 +13,10 @@ app.get('/', function (req, res) {
   res.sendFile('index.html', { root: path.join(__dirname, './dist') })
 })
 
-var server = app.listen(8000, '0.0.0.0', function () {
+const server = app.listen(8000, '0.0.0.0', function () {
 
-  var host = server.address().address
-  var port = server.address().port
+  let host = server.address().address
+  let port = server.address().port
 
   console.log('vue-sui-demo listening at http://%s:%s', host, port)
 
