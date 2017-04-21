@@ -13,7 +13,8 @@ let app = express();
 let ejs = require('ejs');
 
 let authority = require('./util/Authority')
-let services = require('./service');
+let AuthSRV = require('./util/AuthSRV')
+let services = require('./service')
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -42,7 +43,7 @@ app.get('/', (req, res) => {
     res.redirect('index.html');
 });
 
-app.post('/api/auth', services.AuthSRV.AuthResource);
+app.post('/api/auth', AuthSRV.AuthResource);
 app.post('/api/system/groupControl', services.GroupControlSRV.GroupControlResource);
 app.post('/api/system/menuControl', services.MenuControlSRV.MenuControlResource);
 app.post('/api/system/groupMenuControl', services.GroupMenuControlSRV.GroupMenuControlResource);

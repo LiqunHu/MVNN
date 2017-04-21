@@ -24,6 +24,7 @@ const model = require('./model.js');
             domain_id: domain.id,
             usergroup_id: usergroup.id,
             username: 'admin',
+            name: 'admin',
             password: 'admin'
         });
 

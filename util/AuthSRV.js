@@ -30,7 +30,7 @@ exports.AuthResource = async(req, res) => {
         let user = await tb_user.findOne({
             'where': {
                 'username': doc.username,
-                'state': '1'
+                'state': GLBConfig.ENABLE
             }
         });
         if (user == null) {
@@ -65,23 +65,24 @@ async function loginInit(user) {
         }
         returnData.id = user.id
         returnData.name = user.name
+        returnData.createdAt = user.createdAt.Format("MM, yyyy")
         let tb_usergroup = model.usergroup;
         let usergroup = await tb_usergroup.findOne({
             'where': {
                 'domain_id': user.domain_id,
                 'id': user.usergroup_id,
-                'state': '1'
+                'state': GLBConfig.ENABLE
             }
         });
 
         if (usergroup) {
-            returnData.description = usergroup.description
+            returnData.description = usergroup.name
             returnData.menulist = await iterationMenu(usergroup.id, '0')
         }
         return returnData
     } catch (error) {
         logger.error(error);
-        return null;
+        return
     }
 }
 
