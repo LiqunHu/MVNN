@@ -36,7 +36,7 @@ module.exports = db.defineModel('tbl_user', {
     },
     gender: {
         type: db.STRING(1),
-        defaultValue: GLBConfig.AUTH
+        allowNull: true
     },
     avatar: {
         type: db.STRING(200),

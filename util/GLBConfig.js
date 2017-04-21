@@ -1,8 +1,9 @@
 module.exports = {
+    INITPASSWORD: '123456',
     MTYPE_ROOT: '00',
     MTYPE_LEAF: '01',
-    GTYPE_ADMINISTRATOR: '00',
-    GTYPE_OPERATORGROUP: '01',
+    TYPE_ADMINISTRATOR: '00',
+    TYPE_OPERATORGROUP: '01',
     AUTH: '1',
     NOAUTH: '0',
     AUTHINFO: [{

@@ -35,7 +35,7 @@ async function searchAct(req, res) {
             where: {
                 domain_id: user.domain_id,
                 type: {
-                    $ne: GLBConfig.GTYPE_ADMINISTRATOR
+                    $ne: GLBConfig.TYPE_ADMINISTRATOR
                 },
                 name: {
                     $ne: 'administrator'
@@ -66,7 +66,7 @@ async function addAct(req, res) {
             usergroup = await tb_usergroup.create({
                 domain_id: user.domain_id,
                 name: doc.name,
-                type: GLBConfig.GTYPE_OPERATORGROUP
+                type: GLBConfig.TYPE_OPERATORGROUP
             })
         }
         common.sendData(res, usergroup);

@@ -36,27 +36,23 @@
           <div class="modal-body"  id="formA">
             <div class="form-group">
               <label>用户名</label>
-              <input class="form-control" v-model="userNameA" name="userNameA">
+              <input class="form-control" v-model="rowData.username">
             </div>
             <div class="form-group">
               <label>姓名</label>
-              <input class="form-control" v-model="nameA" name="nameA" v-on:change="makeHelpMarkA">
-            </div>
-            <div class="form-group">
-              <label>客户代码</label>
-              <input class="form-control" v-model="helpMarkA" name="helpMarkA">
-            </div>
-            <div class="form-group">
-              <label>联系方式</label>
-              <input type="tel" class="form-control" v-model="mobileA" name="mobileA">
+              <input class="form-control" v-model="rowData.name">
             </div>
             <div class="form-group">
               <label>邮箱</label>
-              <input type="text" class="form-control" v-model="emailA" name="emailA">
+              <input type="text" class="form-control" v-model="rowData.email">
+            </div>
+            <div class="form-group">
+              <label>手机</label>
+              <input type="tel" class="form-control" v-model="rowData.phone">
             </div>
             <div class="form-group">
               <label>用户组</label>
-              <select class="form-contro select2" multiple style="width:100%" name="userGroupA" id="userGroupA">
+              <select class="form-contro select2" multiple style="width:100%" id="usergroup_id">
               </select>
             </div>
           </div>
@@ -70,31 +66,24 @@
 </template>
 <script>
 import $ from 'jquery'
-var common = require('commonFunc')
-var apiUrl = '/api/system/operatorcontrol?method='
+const common = require('commonFunc')
+const apiUrl = '/api/system/operatorcontrol?method='
 
 export default {
   data: function () {
     return {
-      pagePara: '',
-      userNameA: '',
-      nameA: '',
-      helpMarkA: '',
-      mobileA: '',
-      emailA: '',
+      pagePara: {},
+      rowData: {},
       oldRow: ''
     }
   },
   name: 'operatorControl',
-  route: {
-    canReuse: false
-  },
   mounted: function () {
-    var _self = this
-    var $table = $('#table')
+    let _self = this
+    let $table = $('#table')
     function getData () {
       _self.$http.post(apiUrl + 'search', {}).then((response) => {
-        var retdata = response.data['data']
+        let retdata = response.data.data
         $table.bootstrapTable('load', {
           data: retdata
         })
@@ -106,8 +95,8 @@ export default {
     }
     function userGroupFormatter (value, row) {
       for (let i = 0; i < _self.pagePara['groupInfo'].length; i++) {
-        if (_self.pagePara['groupInfo'][i].id === parseInt(value)) {
-          return _self.pagePara['groupInfo'][i].text
+        if (_self.pagePara.groupInfo[i].id === parseInt(value)) {
+          return _self.pagePara.groupInfo[i].text
         }
       }
       return ''
@@ -115,26 +104,21 @@ export default {
     function initTable () {
       window.tableEvents = {
         'click .tableDelete': function (e, value, row, index) {
-          common.rowDelete(_self, '用户删除', apiUrl, row, 'userID')
+          common.rowDelete(_self, '用户删除', apiUrl, row, 'id')
         }
       }
       $table.bootstrapTable({
         height: common.getTableHeight(),
         columns: [
-          {
-            field: 'userID',
-            visible: false
-          },
-          common.BTRowFormat('userName', '用户名'),
+          common.BTRowFormat('username', '用户名'),
           common.BTRowFormatEditable('name', '姓名'),
-          common.BTRowFormatEditable('helpMark', '客户代码'),
-          common.BTRowFormatEditable('mobile', '电话'),
+          common.BTRowFormatEditable('phone', '电话'),
           common.BTRowFormatEditable('email', '邮箱'),
-          common.BTRowFormatEdSelect(_self, 'userGroupID', '用户组', 'groupInfo'),
+          common.BTRowFormatEdSelect(_self, 'usergroup_id', '用户组', 'groupInfo'),
           common.actFormatter('act', common.operateFormatter, tableEvents)
         ],
-        idField: 'userID',
-        uniqueId: 'userID',
+        idField: 'id',
+        uniqueId: 'id',
         toolbar: '#toolbar',
         striped: true,
         clickToSelect: true,
@@ -145,7 +129,7 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function (field, row, oldValue, $el) {
-          common.rowModify(_self, apiUrl, row, 'userID')
+          common.rowModify(_self, apiUrl, row, 'id')
         },
         onRefresh: function () {
           getData()
@@ -156,10 +140,9 @@ export default {
 
     function initPage () {
       _self.$http.post(apiUrl + 'init', {}).then((response) => {
-        var retData = response.data['data']
+        let retData = response.data.data
         _self.pagePara = $.extend(true, {}, retData)
-        common.initSelect2($('#userGroupA'), retData['groupInfo'])
-        common.initSelect2($('#userGroupM'), retData['groupInfo'])
+        common.initSelect2($('#usergroup_id'), retData.groupInfo)
         initTable()
         getData()
         common.reSizeCall()
@@ -176,43 +159,24 @@ export default {
   },
   methods: {
     addM: function (event) {
-      this.userNameA = ''
-      this.nameA = ''
-      this.helpMarkA = ''
-      this.emailA = ''
-      this.mobileA = ''
-      $('#userGroupA').val(null).trigger('change')
+      let _self = this
+      _self.rowData = {}
+      $('#usergroup_id').val(null).trigger('change')
       $('#AddModal').modal('show')
     },
     addOp: function (event) {
-      var _self = this
-      var workRow = {
-        'userID': '',
-        'userName': _self.userNameA,
-        'name': _self.nameA,
-        'helpMark': _self.helpMarkA,
-        'email': _self.emailA,
-        'mobile': _self.mobileA,
-        'userGroupID': $('#userGroupA').val()[0]
-      }
-      _self.$http.post(apiUrl + 'add', workRow).then((response) => {
-        workRow.userID = response.data['data'].userID
-        $('#table').bootstrapTable('insertRow', { index: 0, row: workRow })
-        this.userNameA = ''
-        this.nameA = ''
-        this.helpMarkA = ''
-        this.emailA = ''
-        this.mobileA = ''
-        $('#userGroupA').val(null).trigger('change')
-        $('#formA').data('bootstrapValidator').resetForm()
+      let _self = this
+      _self.rowData.usergroup_id = $('#usergroup_id').val()[0]
+      _self.$http.post(apiUrl + 'add', _self.rowData).then((response) => {
+        let retData = response.data.data
+        $('#table').bootstrapTable('insertRow', { index: 0, row: retData })
+        _self.rowData = {}
+        $('#usergroup_id').val(null).trigger('change')
         common.dealSuccessCommon('增加成功')
       }, (response) => {
         console.log('add error')
         common.dealErrorCommon(_self, response)
       })
-    },
-    makeHelpMarkA: function (event) {
-      this.helpMarkA = common.getPinYin(this.nameA)
     }
   }
 }

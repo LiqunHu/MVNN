@@ -15,7 +15,7 @@ const model = require('./model.js');
         var usergroup = await db_usergroup.create({
             domain_id: domain.id,
             name: 'administrator',
-            type: GLBConfig.GTYPE_ADMINISTRATOR,
+            type: GLBConfig.TYPE_ADMINISTRATOR,
             description: 'adminGroup'
         });
 
@@ -122,6 +122,26 @@ const model = require('./model.js');
             menu_path: '/system/groupMenuControl',
             menu_icon: '',
             menu_index: 3
+        });
+        groupmenu = await db_groupmenu.create({
+            usergroup_id: usergroup.id,
+            menu_id: menu.id,
+            type: menu.type,
+            f_menu_id: menu.f_menu_id,
+            auth_flag: menu.auth_flag,
+            menu_name: menu.menu_name,
+            menu_path: menu.menu_path,
+            menu_icon: menu.menu_icon,
+            menu_index: menu.menu_index
+        });
+        menu = await db_menu.create({
+            type: '01',
+            f_menu_id: fmenuID,
+            auth_flag: '1',
+            menu_name: '操作员维护',
+            menu_path: '/system/operatorcontrol',
+            menu_icon: '',
+            menu_index: 4
         });
         groupmenu = await db_groupmenu.create({
             usergroup_id: usergroup.id,
