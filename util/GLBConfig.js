@@ -1,5 +1,8 @@
 module.exports = {
     INITPASSWORD: '123456',
+    REDISKEY:{
+        AUTH: 'REDISKEYAUTH'
+    },
     MTYPE_ROOT: '00',
     MTYPE_LEAF: '01',
     TYPE_ADMINISTRATOR: '00',

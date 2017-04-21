@@ -1,5 +1,5 @@
 const fs = require('fs');
-const db = require('./db');
+const db = require('./util/db');
 
 const common = require('./util/CommonUtil.js');
 const logger = common.createLogger('db');

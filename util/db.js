@@ -2,9 +2,9 @@ const Sequelize = require('sequelize');
 
 const uuid = require('uuid');
 
-const config = require('./config');
+const config = require('../config');
 
-const common = require('./util/CommonUtil.js');
+const common = require('./CommonUtil.js');
 const logger = common.createLogger('db');
 
 logger.debug('init sequelize...');
@@ -13,13 +13,13 @@ function generateId() {
     return uuid.v4().replace(/-/g, '');
 }
 
-var sequelize = new Sequelize(config.database, config.username, config.password, {
-    host: config.host,
-    dialect: config.dialect,
+var sequelize = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
+    host: config.mysql.host,
+    dialect: config.mysql.dialect,
     pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
+        max: 5, // max
+        min: 0, // min
+        idle: 10000 //10 seconds
     }
 });
 

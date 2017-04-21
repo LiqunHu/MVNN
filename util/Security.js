@@ -2,8 +2,10 @@ const CryptoJS = require('crypto-js')
 const common = require('../util/CommonUtil.js');
 const logger = common.createLogger('Security.js');
 
+const RedisClient = require('../util/RedisClient');
 const model = require('../model');
 const config = require('../config');
+const GLBConfig = require('./GLBConfig');
 
 exports.token2user = async(req) => {
     try {
@@ -24,48 +26,85 @@ exports.token2user = async(req) => {
             sha1 = tokensplit[3]
 
         if (parseInt(expires) < Date.now()) {
-            logger.info('expires');
+            logger.error('expires');
             return null;
         }
 
-        let tbUser = model.user;
-        let user = await tbUser.findOne({
-            'where': {
-                'id': uid,
-                'state': '1'
+        if (config.redisCache) {
+            let authData = await RedisClient.getItem(GLBConfig.REDISKEY.AUTH + token_str)
+            if (authData) {
+                let user = authData.user
+                if (!user) {
+                    logger.error('user do not exist');
+                    return null;
+                }
+
+                let idf = aesEncryptModeCFB(user.username, user.password, magicNo)
+                let s = [uid, idf, expires, config.SECRET_KEY].join('-')
+                if (sha1 != CryptoJS.SHA1(s).toString()) {
+                    logger.error('invalid sha1');
+                    return null;
+                }
+
+                let menuList = authData.authmenus;
+
+                //auth control
+                let menus = {};
+                for (let m of menuList) {
+                    let ma = m.menu_path.split('/');
+                    menus[ma[ma.length - 1].toUpperCase()] = ''
+                }
+
+                let patha = req.path.split('/')
+                let func = patha[patha.length - 1].toUpperCase()
+                if (func in menus) {
+                    return user;
+                }
+            } else {
+                logger.error('Redis get authData failed');
+                return null;
             }
-        });
-        if (!user) {
-            logger.info('user do not exist');
-            return null;
-        }
-
-        let idf = aesEncryptModeCFB(user.username, user.password, magicNo)
-        let s = [uid, idf, expires, config.SECRET_KEY].join('-')
-        if (sha1 != CryptoJS.SHA1(s).toString()) {
-            logger.info('invalid sha1');
-            return null;
-        }
-
-        let db_usergroupmenu = model.usergroupmenu;
-        let menuList = await db_usergroupmenu.findAll({
-            where: {
-                usergroup_id: user.usergroup_id,
-                'state': '1'
+        } else {
+            // local db auth
+            let tbUser = model.user;
+            let user = await tbUser.findOne({
+                'where': {
+                    'id': uid,
+                    'state': '1'
+                }
+            });
+            if (!user) {
+                logger.info('user do not exist');
+                return null;
             }
-        });
 
-        // auth control
-        let menus = {};
-        for (let m of menuList) {
-            let ma = m.menu_path.split('/');
-            menus[ma[ma.length - 1].toUpperCase()] = ''
-        }
+            let idf = aesEncryptModeCFB(user.username, user.password, magicNo)
+            let s = [uid, idf, expires, config.SECRET_KEY].join('-')
+            if (sha1 != CryptoJS.SHA1(s).toString()) {
+                logger.info('invalid sha1');
+                return null;
+            }
 
-        let patha = req.path.split('/')
-        let func = patha[patha.length - 1].toUpperCase()
-        if (func in menus) {
-            return user;
+            let db_usergroupmenu = model.usergroupmenu;
+            let menuList = await db_usergroupmenu.findAll({
+                where: {
+                    usergroup_id: user.usergroup_id,
+                    'state': '1'
+                }
+            });
+
+            // auth control
+            let menus = {};
+            for (let m of menuList) {
+                let ma = m.menu_path.split('/');
+                menus[ma[ma.length - 1].toUpperCase()] = ''
+            }
+
+            let patha = req.path.split('/')
+            let func = patha[patha.length - 1].toUpperCase()
+            if (func in menus) {
+                return user;
+            }
         }
         return null;
     } catch (error) {
@@ -96,11 +135,15 @@ function aesEncryptModeCFB(msg, pwd, magicNo) {
 }
 
 exports.aesDecryptModeCFB = (msg, pwd, magicNo) => {
-  let key = CryptoJS.enc.Hex.parse(pwd)
-  let iv = CryptoJS.enc.Hex.parse(magicNo)
+    let key = CryptoJS.enc.Hex.parse(pwd)
+    let iv = CryptoJS.enc.Hex.parse(magicNo)
 
-  let decrypted = CryptoJS.AES.decrypt(msg, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Utf8)
-  return decrypted
+    let decrypted = CryptoJS.AES.decrypt(msg, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    }).toString(CryptoJS.enc.Utf8)
+    return decrypted
 }
 
 exports.user2token = (user, identifyCode, magicNo) => {

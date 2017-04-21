@@ -1,5 +1,5 @@
 const CryptoJS = require('crypto-js');
-const db = require('../db');
+const db = require('../util/db');
 const GLBConfig = require('../util/GLBConfig');
 
 module.exports = db.defineModel('tbl_user', {

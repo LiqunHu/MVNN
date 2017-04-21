@@ -3,7 +3,9 @@ const common = require('../util/CommonUtil.js');
 const logger = common.createLogger('AuthSRV.js');
 const model = require('../model');
 const Security = require('../util/Security');
+const config = require('../config');
 const GLBConfig = require('../util/GLBConfig');
+const RedisClient = require('../util/RedisClient');
 
 exports.AuthResource = async(req, res) => {
     let doc = req.body;
@@ -44,9 +46,14 @@ exports.AuthResource = async(req, res) => {
         } else {
             let session_token = Security.user2token(user, doc.identifyCode, doc.magicNo)
             res.append('authorization', session_token);
-            let loginData = await loginInit(user);
-            common.sendData(res, loginData);
-            return
+            let loginData = await loginInit(user, session_token);
+            if (loginData) {
+                common.sendData(res, loginData);
+                return
+            } else {
+                common.sendError(res, 'auth_05');
+                return
+            }
         }
     } catch (error) {
         logger.error(error);
@@ -55,7 +62,7 @@ exports.AuthResource = async(req, res) => {
     }
 }
 
-async function loginInit(user) {
+async function loginInit(user, session_token) {
     try {
         let returnData = {};
         if (user.avatar) {
@@ -78,11 +85,67 @@ async function loginInit(user) {
         if (usergroup) {
             returnData.description = usergroup.name
             returnData.menulist = await iterationMenu(usergroup.id, '0')
+
+            if (config.redisCache) {
+                // prepare redis Cache
+                let tbl_menu = model.menu;
+                let menus = await tbl_menu.findAll({
+                    where: {
+                        auth_flag: GLBConfig.NOAUTH
+                    },
+                    order: [
+                        ['menu_index']
+                    ]
+                });
+
+                let tb_usergroupmenu = model.usergroupmenu;
+                let groupmenus = await tb_usergroupmenu.findAll({
+                    where: {
+                        usergroup_id: user.usergroup_id
+                    },
+                    order: [
+                        ['menu_index']
+                    ]
+                });
+
+                let authMenus = []
+                for (let item of menus) {
+                    authMenus.push({
+                        type: item.type,
+                        auth_flag: item.auth_flag,
+                        menu_name: item.menu_name,
+                        menu_path: item.menu_path,
+                        menu_icon: item.menu_icon
+                    })
+                }
+
+                for (let item of groupmenus) {
+                    authMenus.push({
+                        type: item.type,
+                        auth_flag: item.auth_flag,
+                        menu_name: item.menu_name,
+                        menu_path: item.menu_path,
+                        menu_icon: item.menu_icon
+                    })
+                }
+
+                let error = await RedisClient.setItem(GLBConfig.REDISKEY.AUTH + session_token, {
+                    user: user,
+                    authmenus: authMenus
+                }, RedisClient.tokenExpired)
+                if (error) {
+                    return null
+                }
+            }
+
+            return returnData
+        } else {
+            return null
         }
-        return returnData
+
     } catch (error) {
         logger.error(error);
-        return
+        return null
     }
 }
 
@@ -105,11 +168,11 @@ async function iterationMenu(GroupID, fMenuID) {
             sub_menu = await iterationMenu(GroupID, m.menu_id);
         }
         return_list.push({
-            'type': m.type,
-            'menu_name': m.menu_name,
-            'menu_path': m.menu_path,
-            'menu_icon': m.menu_icon,
-            'sub_menu': sub_menu
+            type: m.type,
+            menu_name: m.menu_name,
+            menu_path: m.menu_path,
+            menu_icon: m.menu_icon,
+            sub_menu: sub_menu
         })
     }
     return return_list

@@ -1,12 +1,21 @@
 var config = {
-    // for db`
-    dialect: 'mysql',
-    database: 'test',
-    username: 'root',
-    password: '123456',
-    host: 'localhost',
-    port: 3306,
-    // for
+    // for mysql`
+    mysql: {
+        dialect: 'mysql',
+        database: 'test',
+        username: 'root',
+        password: '123456',
+        host: 'localhost',
+        port: 3306
+    },
+    redisCache: true,
+    // for redis
+    redis: {
+        host: 'localhost',
+        port: 6379,
+        opts: {}
+    },
+    // for logger
     loggerConfig: {
         level: 'DEBUG',
         config: {

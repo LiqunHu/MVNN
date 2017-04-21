@@ -1,4 +1,4 @@
-const db = require('../db');
+const db = require('../util/db');
 
 module.exports = db.defineModel('tbl_domain', {
     domain: {

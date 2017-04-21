@@ -16,7 +16,7 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu">
         <li class="header">主菜单</li>
-        <template v-for="item in userinfo['menulist']">
+        <template v-for="item in userinfo.menulist">
           <li class="treeview">
             <template v-if="item.type === '01'">
               <router-link to="item.menuPath">
