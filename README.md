@@ -12,7 +12,8 @@ You should have a docker environment. Then everything will be done. :)
 Usage
 -----
 export NODE_ENV=test # for set NODE_ENV
-server: codenpm install; npm run start
+
+server: npm install; npm run start
 web: cd frontEnd; cnpm install; npm run dev
 static link: cd public/dependencies; bash link.sh
 
