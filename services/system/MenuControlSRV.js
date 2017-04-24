@@ -4,6 +4,9 @@ const GLBConfig = require('../../util/GLBConfig');
 const logger = common.createLogger('MenuControlSRV');
 const model = require('../../model');
 
+// tables
+const tb_menu = model.menu;
+
 exports.MenuControlResource = (req, res) => {
     let method = req.query.method
     if (method === 'init') {
@@ -27,7 +30,7 @@ async function initAct(req, res) {
         'id': 0,
         'text': '根菜单'
     }]
-    let tb_menu = model.menu;
+
     let menus = await tb_menu.findAll({
         where: {
             type: GLBConfig.MTYPE_ROOT
@@ -57,7 +60,7 @@ async function searchAct(req, res) {
 
 async function iterationMenu(fMenuID) {
     let return_list = []
-    let tb_menu = model.menu;
+
     let menus = await tb_menu.findAll({
         where: {
             f_menu_id: fMenuID
@@ -102,7 +105,7 @@ async function iterationMenu(fMenuID) {
 async function addAct(req, res) {
     try {
         let doc = req.body;
-        let tb_menu = model.menu;
+
         let menu = await tb_menu.findOne({
             where: {
                 menu_name: doc.menu_name
@@ -144,7 +147,6 @@ async function addAct(req, res) {
 async function modifyAct(req, res) {
     try {
         let doc = req.body;
-        let tb_menu = model.menu;
         let menu = await tb_menu.findOne({
             where: {
                 id: doc.old.id
@@ -169,7 +171,6 @@ async function modifyAct(req, res) {
 async function deleteAct(req, res) {
     try {
         let doc = req.body
-        let tb_menu = model.menu;
         let menu = await tb_menu.findOne({
             where: {
                 id: doc.id
@@ -191,22 +192,6 @@ async function deleteAct(req, res) {
             common.sendData(res, menu);
         } else {
             common.sendError(res, 'menu_02');
-            return
-        }
-
-        let tb_user = model.user
-        let usersCount = await tb_user.count({
-            where: {
-                usergroup_id: usergroup.id
-            }
-        })
-
-        if (usergroup) {
-            await usergroup.destroy();
-            common.sendData(res)
-            return
-        } else {
-            common.sendError(res, 'group_02')
             return
         }
     } catch (error) {

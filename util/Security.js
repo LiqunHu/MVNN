@@ -7,6 +7,10 @@ const model = require('../model');
 const config = require('../config');
 const GLBConfig = require('./GLBConfig');
 
+// table
+let tb_user = model.user;
+let tb_usergroupmenu = model.usergroupmenu;
+
 exports.token2user = async(req) => {
     try {
         let token_str = req.get('authorization');
@@ -66,8 +70,8 @@ exports.token2user = async(req) => {
             }
         } else {
             // local db auth
-            let tbUser = model.user;
-            let user = await tbUser.findOne({
+
+            let user = await tb_user.findOne({
                 'where': {
                     'id': uid,
                     'state': '1'
@@ -85,8 +89,7 @@ exports.token2user = async(req) => {
                 return null;
             }
 
-            let db_usergroupmenu = model.usergroupmenu;
-            let menuList = await db_usergroupmenu.findAll({
+            let menuList = await tb_usergroupmenu.findAll({
                 where: {
                     usergroup_id: user.usergroup_id,
                     'state': '1'

@@ -4,10 +4,12 @@ const logger = common.createLogger('Authority.js');
 const model = require('../model')
 const Security = require('./Security');
 
+// table
+const tb_menu = model.menu;
+
 exports.AuthMiddleware = async (req, res, next) => {
     try {
-        let db_menu = model.menu;
-        let menuList = await db_menu.findAll({
+        let menuList = await tb_menu.findAll({
             where: {
                 auth_flag: '0',
                 state: '1'

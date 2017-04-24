@@ -4,6 +4,10 @@ const GLBConfig = require('../../util/GLBConfig');
 const logger = common.createLogger('GroupControlSRV');
 const model = require('../../model');
 
+// tables
+const tb_usergroup = model.usergroup;
+const tb_user = model.user
+
 exports.GroupControlResource = (req, res) => {
     let method = req.query.method
     if (method === 'init') {
@@ -30,7 +34,6 @@ function initAct(req, res) {
 async function searchAct(req, res) {
     try {
         let user = req.user;
-        let tb_usergroup = model.usergroup;
         let groups = await tb_usergroup.findAll({
             where: {
                 domain_id: user.domain_id,
@@ -52,7 +55,7 @@ async function addAct(req, res) {
     try {
         let doc = req.body;
         let user = req.user;
-        let tb_usergroup = model.usergroup;
+
         let usergroup = await tb_usergroup.findOne({
             where: {
                 domain_id: user.domain_id,
@@ -79,7 +82,6 @@ async function modifyAct(req, res) {
     try {
         let doc = req.body
         let user = req.user
-        let tb_usergroup = model.usergroup
         let usergroup = await tb_usergroup.findOne({
             where: {
                 domain_id: user.domain_id,
@@ -104,14 +106,13 @@ async function deleteAct(req, res) {
     try {
         let doc = req.body
         let user = req.user
-        let tb_usergroup = model.usergroup
         let usergroup = await tb_usergroup.findOne({
             where: {
                 domain_id: user.domain_id,
                 name: doc.name
             }
         })
-        let tb_user = model.user
+
         let usersCount = await tb_user.count({
             where: {
                 usergroup_id: usergroup.id

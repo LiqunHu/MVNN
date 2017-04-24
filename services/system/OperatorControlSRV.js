@@ -4,6 +4,9 @@ const GLBConfig = require('../../util/GLBConfig');
 const logger = common.createLogger('GroupControlSRV');
 const model = require('../../model');
 
+const tb_usergroup = model.usergroup
+const tb_user = model.user
+
 exports.OperatorControlResource = (req, res) => {
     let method = req.query.method
     if (method === 'init') {
@@ -24,8 +27,6 @@ exports.OperatorControlResource = (req, res) => {
 async function initAct(req, res) {
     let returnData = {}
     let user = req.user;
-
-    let tb_usergroup = model.usergroup;
 
     let whereCase;
     if (user.username === 'admin') {
@@ -62,7 +63,7 @@ async function searchAct(req, res) {
         let doc = req.body
         let user = req.user;
         let returnData = {}
-        let tb_user = model.user
+
         let users = await tb_user.findAll({
             attributes: ['id', 'usergroup_id', 'username', 'email', 'phone', 'name', 'gender', 'address', 'state', 'city', 'zipcode', 'type', 'createdAt', 'updatedAt'],
             where: {
@@ -85,7 +86,6 @@ async function addAct(req, res) {
         let doc = req.body
         let user = req.user
 
-        let tb_usergroup = model.usergroup
         let usergroup = tb_usergroup.findOne({
             where: {
                 id: doc.usergroup_id
@@ -93,7 +93,6 @@ async function addAct(req, res) {
         });
 
         if (usergroup) {
-            let tb_user = model.user
             let adduser = await tb_user.findOne({
                 where: {
                     domain_id: user.domain_id,
@@ -141,7 +140,6 @@ async function modifyAct(req, res) {
         let doc = req.body
         let user = req.user
 
-        let tb_user = model.user
         let modiuser = await tb_user.findOne({
             where: {
                 domain_id: user.domain_id,
@@ -179,7 +177,6 @@ async function deleteAct(req, res) {
         let doc = req.body
         let user = req.user
 
-        let tb_user = model.user
         let deluser = await tb_user.findOne({
             where: {
                 domain_id: user.domain_id,

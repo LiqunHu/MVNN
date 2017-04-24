@@ -4,6 +4,10 @@ const GLBConfig = require('../../util/GLBConfig');
 const logger = common.createLogger('GroupControlSRV');
 const model = require('../../model');
 
+const tb_usergroup = model.usergroup;
+const tb_usergroupmenu = model.usergroupmenu
+const tb_menu = model.menu;
+
 exports.GroupMenuControlResource = (req, res) => {
     let method = req.query.method
     if (method === 'init') {
@@ -20,8 +24,6 @@ exports.GroupMenuControlResource = (req, res) => {
 async function initAct(req, res) {
     let returnData = {}
     let user = req.user;
-
-    let tb_usergroup = model.usergroup;
 
     let whereCase;
     if (user.username === 'admin') {
@@ -55,7 +57,7 @@ async function initAct(req, res) {
 
 async function iterationMenu(fMenuID) {
     let return_list = []
-    let tb_menu = model.menu;
+
     let menus = await tb_menu.findAll({
         where: {
             f_menu_id: fMenuID,
@@ -100,7 +102,7 @@ async function searchAct(req, res) {
         let doc = req.body
         let returnData = {}
         returnData.groupMenu = []
-        let tb_usergroupmenu = model.usergroupmenu
+
         let groupmenus = await tb_usergroupmenu.findAll({
             where: {
                 usergroup_id: doc.usergroup_id
@@ -120,7 +122,6 @@ async function modifyAct(req, res) {
     try {
         let doc = req.body
 
-        let tb_usergroupmenu = model.usergroupmenu
         await tb_usergroupmenu.destroy({
             where: {
                 usergroup_id: doc.usergroup_id

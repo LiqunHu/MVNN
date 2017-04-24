@@ -7,6 +7,12 @@ const config = require('../config');
 const GLBConfig = require('../util/GLBConfig');
 const RedisClient = require('../util/RedisClient');
 
+
+// table
+const tb_user = model.user;
+const tb_usergroup = model.usergroup;
+const tb_usergroupmenu = model.usergroupmenu;
+
 exports.AuthResource = async(req, res) => {
     let doc = req.body;
     if (!('domain' in doc)) {
@@ -27,8 +33,6 @@ exports.AuthResource = async(req, res) => {
     }
 
     try {
-        let tb_user = model.user;
-
         let user = await tb_user.findOne({
             'where': {
                 'username': doc.username,
@@ -73,7 +77,7 @@ async function loginInit(user, session_token) {
         returnData.id = user.id
         returnData.name = user.name
         returnData.createdAt = user.createdAt.Format("MM, yyyy")
-        let tb_usergroup = model.usergroup;
+
         let usergroup = await tb_usergroup.findOne({
             'where': {
                 'domain_id': user.domain_id,
@@ -98,7 +102,6 @@ async function loginInit(user, session_token) {
                     ]
                 });
 
-                let tb_usergroupmenu = model.usergroupmenu;
                 let groupmenus = await tb_usergroupmenu.findAll({
                     where: {
                         usergroup_id: user.usergroup_id
@@ -151,7 +154,6 @@ async function loginInit(user, session_token) {
 
 async function iterationMenu(GroupID, fMenuID) {
     let return_list = []
-    let tb_usergroupmenu = model.usergroupmenu;
     let menus = await tb_usergroupmenu.findAll({
         where: {
             usergroup_id: GroupID,
