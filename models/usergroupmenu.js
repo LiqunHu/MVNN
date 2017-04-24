@@ -24,6 +24,4 @@ module.exports = db.defineModel('tbl_usergroupmenu', {
         type: db.INTEGER,
         allowNull: false
     }
-}, {
-    timestamps: true,
 });

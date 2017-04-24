@@ -9,10 +9,6 @@ const logger = common.createLogger('db');
 
 logger.debug('init sequelize...');
 
-function generateId() {
-    return uuid.v4().replace(/-/g, '');
-}
-
 var sequelize = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
     host: config.mysql.host,
     dialect: config.mysql.dialect,
@@ -23,7 +19,7 @@ var sequelize = new Sequelize(config.mysql.database, config.mysql.username, conf
     }
 });
 
-const ID_TYPE = Sequelize.STRING(50);
+const ID_TYPE = Sequelize.BIGINT;
 
 function defineModel(name, attributes, params) {
     let attrs = {};
@@ -31,6 +27,7 @@ function defineModel(name, attributes, params) {
 
     attrs.id = {
         type: ID_TYPE,
+        autoIncrement: true,
         primaryKey: true
     };
 
@@ -80,15 +77,13 @@ function defineModel(name, attributes, params) {
     // }, '  '));
     return sequelize.define(name, attrs, Object.assign({
         tableName: name,
-        timestamps: false,
+        timestamps: true,
+        underscored: true,
         hooks: {
             beforeValidate: function(obj) {
                 let now = Date.now();
                 if (obj.isNewRecord) {
                     logger.debug('will create entity...' + obj);
-                    if (!obj.id) {
-                        obj.id = generateId();
-                    }
                     obj.version = 0;
                 } else {
                     logger.debug('will update entity...');
@@ -120,6 +115,5 @@ for (let type of TYPES) {
 }
 
 exp.ID = ID_TYPE;
-exp.generateId = generateId;
 
 module.exports = exp;

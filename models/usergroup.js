@@ -13,6 +13,4 @@ module.exports = db.defineModel('tbl_usergroup', {
         type: db.STRING(3),
         allowNull: true
     }
-}, {
-    timestamps: true,
 });

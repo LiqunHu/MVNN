@@ -76,7 +76,7 @@ async function loginInit(user, session_token) {
         }
         returnData.id = user.id
         returnData.name = user.name
-        returnData.createdAt = user.createdAt.Format("MM, yyyy")
+        returnData.created_at = user.created_at.Format("MM, yyyy")
 
         let usergroup = await tb_usergroup.findOne({
             'where': {

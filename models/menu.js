@@ -26,6 +26,4 @@ module.exports = db.defineModel('tbl_menu', {
         type: db.INTEGER,
         allowNull: false
     }
-}, {
-    timestamps: true,
 });

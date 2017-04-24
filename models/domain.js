@@ -6,6 +6,4 @@ module.exports = db.defineModel('tbl_domain', {
         unique: true
     },
     description: db.STRING(200)
-}, {
-    timestamps: true,
 });

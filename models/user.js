@@ -46,7 +46,7 @@ module.exports = db.defineModel('tbl_user', {
         type: db.STRING(100),
         allowNull: true
     },
-    state: {
+    country: {
         type: db.STRING(20),
         allowNull: true
     },
@@ -59,11 +59,10 @@ module.exports = db.defineModel('tbl_user', {
         allowNull: true
     },
     type: {
-        type: db.STRING(30),
+        type: db.STRING(3),
         allowNull: true
     }
 }, {
-    timestamps: true,
     indexes: [{
         unique: true,
         fields: ['domain_id', 'username']

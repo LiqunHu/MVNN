@@ -65,7 +65,7 @@ async function searchAct(req, res) {
         let returnData = {}
 
         let users = await tb_user.findAll({
-            attributes: ['id', 'usergroup_id', 'username', 'email', 'phone', 'name', 'gender', 'address', 'state', 'city', 'zipcode', 'type', 'createdAt', 'updatedAt'],
+            attributes: ['id', 'usergroup_id', 'username', 'email', 'phone', 'name', 'gender', 'address', 'state', 'city', 'zipcode', 'type', 'created_at', 'updated_at'],
             where: {
                 domain_id: user.domain_id,
                 state: GLBConfig.ENABLE,
@@ -188,7 +188,6 @@ async function deleteAct(req, res) {
         if(deluser) {
             deluser.state = GLBConfig.DISABLE
             await deluser.save()
-            delete deluser.password
             common.sendData(res)
             return
         } else {

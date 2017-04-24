@@ -150,6 +150,7 @@ export default {
         var retData = response.data.data
         $('#table').bootstrapTable('insertRow', { index: 0, row: retData })
         _self.nameA = ''
+        $('#stateA').val(null).trigger('change')
         common.dealSuccessCommon('增加成功')
         console.log('add success')
       }, (response) => {
