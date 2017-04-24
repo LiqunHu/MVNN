@@ -16,5 +16,8 @@ server: codenpm install; npm run start
 web: cd frontEnd; cnpm install; npm run dev
 static link: cd public/dependencies; bash link.sh
 
+for db create:
+node init-db.js; node init-data.js
+
 -----
 http://localhost you will have the web home.
