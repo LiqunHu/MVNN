@@ -60,13 +60,13 @@ export default{
   methods: {
     login: function (event) {
       var encInfo = common.aesEncryptModeCFB(this.username, this.password)
-      this.$http.post('/api/auth', { domain: 'admin',username: this.username, identifyCode: encInfo[1], magicNo: encInfo[0] }).then((response) => {
+      this.$http.post('/api/auth', { domain: 'adminCo',username: this.username, identifyCode: encInfo[1], magicNo: encInfo[0] }).then((response) => {
         var token = response.headers.get('authorization')
 
         if (token) {
           common.clearStoreData()
           common.setStoreData('token', token)
-          common.setStoreData('userinfo', response.data['data'])
+          common.setStoreData('userinfo', response.data.info)
           $('body').removeClass()
           $('body').addClass('hold-transition')
           $('body').addClass('skin-blue')

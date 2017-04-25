@@ -8,7 +8,7 @@ log
 public/static/dependencies/bootstrap
 public/static/dependencies/bootstrap-datepicker
 public/static/dependencies/bootstrap-daterangepicker
-public/static/dependencies/bootstrap-dialog
+public/static/dependencies/bootstrap3-dialog
 public/static/dependencies/bootstrap-table
 public/static/dependencies/ckeditor
 public/static/dependencies/cropper

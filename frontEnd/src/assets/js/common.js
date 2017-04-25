@@ -457,7 +457,7 @@ exports.rowModify = function(_self, apiUrl, row, key) {
         'old': _self.oldRow,
         'new': row
     }).then((response) => {
-        let updaterow = response.data.data
+        let updaterow = response.data.info
         console.log('modify success')
     }, (response) => {
         console.log('modify error')

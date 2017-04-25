@@ -8,7 +8,7 @@ mklink /J font-awesome ..\..\node_modules\font-awesome
 mklink /J bootstrap-table ..\..\node_modules\bootstrap-table
 mklink /J bootstrap-datepicker ..\..\node_modules\bootstrap-datepicker
 mklink /J bootstrap-daterangepicker ..\..\node_modules\bootstrap-daterangepicker
-mklink /J bootstrap-dialog ..\..\node_modules\bootstrap-dialog
+mklink /J bootstrap3-dialog ..\..\node_modules\bootstrap3-dialog
 mklink /J lightbox2 ..\..\node_modules\lightbox2
 mklink /J jquery-slimscroll ..\..\node_modules\jquery-slimscroll
 mklink /J x-editable ..\..\node_modules\x-editable

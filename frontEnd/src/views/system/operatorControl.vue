@@ -83,7 +83,7 @@ export default {
     let $table = $('#table')
     function getData () {
       _self.$http.post(apiUrl + 'search', {}).then((response) => {
-        let retdata = response.data.data
+        let retdata = response.data.info
         $table.bootstrapTable('load', {
           data: retdata
         })
@@ -140,7 +140,7 @@ export default {
 
     function initPage () {
       _self.$http.post(apiUrl + 'init', {}).then((response) => {
-        let retData = response.data.data
+        let retData = response.data.info
         _self.pagePara = $.extend(true, {}, retData)
         common.initSelect2($('#usergroup_id'), retData.groupInfo)
         initTable()
@@ -168,7 +168,7 @@ export default {
       let _self = this
       _self.rowData.usergroup_id = $('#usergroup_id').val()[0]
       _self.$http.post(apiUrl + 'add', _self.rowData).then((response) => {
-        let retData = response.data.data
+        let retData = response.data.info
         $('#table').bootstrapTable('insertRow', { index: 0, row: retData })
         _self.rowData = {}
         $('#usergroup_id').val(null).trigger('change')

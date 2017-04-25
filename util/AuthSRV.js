@@ -9,6 +9,7 @@ const RedisClient = require('../util/RedisClient');
 
 
 // table
+const tb_domain = model.domain;
 const tb_user = model.user;
 const tb_usergroup = model.usergroup;
 const tb_usergroupmenu = model.usergroupmenu;
@@ -33,10 +34,21 @@ exports.AuthResource = async(req, res) => {
     }
 
     try {
+        let domain = await tb_domain.findOne({
+            'where': {
+                domain: doc.domain
+            }
+        });
+        if (domain == null) {
+            common.sendError(res, 'auth_05');
+            return
+        }
+
         let user = await tb_user.findOne({
             'where': {
-                'username': doc.username,
-                'state': GLBConfig.ENABLE
+                domain_id: domain.id,
+                username: doc.username,
+                state: GLBConfig.ENABLE
             }
         });
         if (user == null) {

@@ -5,7 +5,7 @@ rm -rf jquery-ui
 rm -rf bootstrap
 rm -rf select2
 rm -rf font-awesome
-rm -rf bootstrap-table
+rm -rf bootstrap3-table
 rm -rf bootstrap-datepicker
 rm -rf bootstrap-daterangepicker
 rm -rf bootstrap-dialog

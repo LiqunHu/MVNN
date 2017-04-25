@@ -1,4 +1,5 @@
 const db = require('../util/db');
+const GLBConfig = require('../util/GLBConfig');
 
 module.exports = db.defineModel('tbl_menu', {
     type: {
@@ -11,7 +12,7 @@ module.exports = db.defineModel('tbl_menu', {
     },
     auth_flag: {
         type: db.STRING(2),
-        defaultValue: '1' // 1 need auth, 0 not
+        defaultValue: GLBConfig.AUTH // 1 need auth, 0 not
     },
     menu_name: db.STRING(100),
     menu_path: {

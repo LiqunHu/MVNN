@@ -114,7 +114,7 @@ export default {
 
     function initPage () {
       _self.$http.post(apiUrl + 'init', {}).then((response) => {
-        let retData = response.data.data
+        let retData = response.data.info
         for (let i = 0; i < retData.menuInfo.length; i++) {
           retData.menuInfo[i].state = false
         }
@@ -143,7 +143,7 @@ export default {
     function getCheckData () {
       let userGroupID = $('#userGroupID').val()
       _self.$http.post(apiUrl + 'search', { usergroup_id: userGroupID[0] }).then((response) => {
-        let retData = response.data.data
+        let retData = response.data.info
         let menuInfo = JSON.parse(JSON.stringify(_self.pagePara.menuInfo))
         for (let i = 0; i < retData.groupMenu.length; i++) {
           for (let j = 0; j < menuInfo.length; j++) {

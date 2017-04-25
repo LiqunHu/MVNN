@@ -30,7 +30,7 @@ function sendData(res, data) {
     let sendData = {
         errno: 0,
         msg: 'ok',
-        data: datares
+        info: datares
     };
     res.send(sendData);
 }

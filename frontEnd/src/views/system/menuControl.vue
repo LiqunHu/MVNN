@@ -106,7 +106,7 @@ const apiUrl = '/api/system/menucontrol?method='
 
 function getData(obj) {
     obj.$http.post(apiUrl + 'search', {}).then((response) => {
-        let retdata = response.data.data
+        let retdata = response.data.info
         $('#table').bootstrapTable('load', {
             data: retdata
         })
@@ -118,7 +118,7 @@ function getData(obj) {
 
 function initPage(obj) {
     obj.$http.post(apiUrl + 'init', {}).then((response) => {
-        let retData = response.data.data
+        let retData = response.data.info
         obj.pagePara = JSON.parse(JSON.stringify(retData))
         common.initSelect2($('#f_menu_id'), retData.fMenuInfo)
         common.initSelect2($('#auth_flag'), retData.authInfo)

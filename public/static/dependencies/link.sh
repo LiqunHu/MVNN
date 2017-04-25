@@ -8,7 +8,7 @@ rm -rf font-awesome;cp -r ../../../frontEnd/node_modules/font-awesome font-aweso
 rm -rf bootstrap-table;cp -r ../../../frontEnd/node_modules/bootstrap-table bootstrap-table
 rm -rf bootstrap-datepicker;cp -r ../../../frontEnd/node_modules/bootstrap-datepicker bootstrap-datepicker
 rm -rf bootstrap-daterangepicker;cp -r ../../../frontEnd/node_modules/bootstrap-daterangepicker bootstrap-daterangepicker
-rm -rf bootstrap-dialog;cp -r ../../../frontEnd/node_modules/bootstrap-dialog bootstrap-dialog
+rm -rf bootstrap3-dialog;cp -r ../../../frontEnd/node_modules/bootstrap3-dialog bootstrap3-dialog
 rm -rf lightbox2;cp -r ../../../frontEnd/node_modules/lightbox2 lightbox2
 rm -rf jquery-slimscroll;cp -r ../../../frontEnd/node_modules/jquery-slimscroll jquery-slimscroll
 rm -rf x-editable;cp -r ../../../frontEnd/node_modules/x-editable x-editable
