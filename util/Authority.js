@@ -1,8 +1,9 @@
 const common = require('../util/CommonUtil.js');
 const logger = common.createLogger('Authority.js');
 
-const model = require('../model')
+const model = require('../model');
 const Security = require('./Security');
+const GLBConfig = require('../util/GLBConfig');
 
 // table
 const tb_menu = model.menu;
@@ -11,8 +12,8 @@ exports.AuthMiddleware = async (req, res, next) => {
     try {
         let menuList = await tb_menu.findAll({
             where: {
-                auth_flag: '0',
-                state: '1'
+                auth_flag: GLBConfig.AUTH,
+                state: GLBConfig.ENABLE
             }
         });
 
@@ -24,7 +25,7 @@ exports.AuthMiddleware = async (req, res, next) => {
 
         let patha = req.path.split('/')
         let func = patha[patha.length - 1].toUpperCase()
-        if (!(func in menus)) {
+        if (func in menus) {
             let user = await Security.token2user(req)
 
             if (user == null) {

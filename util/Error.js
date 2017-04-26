@@ -2,6 +2,7 @@ module.exports = {
     common_01: '方法不支持',
     group_01: '用户组已存在',
     group_02: '用户组不存在',
+    group_02: '叶子节点没有路径',
     group_03: '用户组下存在用户',
     operator_01: '组不存在',
     operator_02: '用户已经存在',

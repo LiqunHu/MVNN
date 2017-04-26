@@ -104,16 +104,6 @@ async function loginInit(user, session_token) {
 
             if (config.redisCache) {
                 // prepare redis Cache
-                let tbl_menu = model.menu;
-                let menus = await tbl_menu.findAll({
-                    where: {
-                        auth_flag: GLBConfig.NOAUTH
-                    },
-                    order: [
-                        ['menu_index']
-                    ]
-                });
-
                 let groupmenus = await tb_usergroupmenu.findAll({
                     where: {
                         usergroup_id: user.usergroup_id
@@ -124,16 +114,6 @@ async function loginInit(user, session_token) {
                 });
 
                 let authMenus = []
-                for (let item of menus) {
-                    authMenus.push({
-                        type: item.type,
-                        auth_flag: item.auth_flag,
-                        menu_name: item.menu_name,
-                        menu_path: item.menu_path,
-                        menu_icon: item.menu_icon
-                    })
-                }
-
                 for (let item of groupmenus) {
                     authMenus.push({
                         type: item.type,

@@ -121,16 +121,17 @@ async function addAct(req, res) {
             }else{
                 type = GLBConfig.MTYPE_LEAF
             }
-            let f_menu_id;
-            if (doc.auth_flag === '0') {
-                f_menu_id = '0'
-                type = GLBConfig.MTYPE_LEAF
-            }else{
-                f_menu_id = doc.f_menu_id
+
+            if (type === GLBConfig.MTYPE_LEAF) {
+                if (doc.menu_path){
+                    ommon.sendError(res, 'menu_04');
+                    return
+                }
             }
+
             menu = await tb_menu.create({
                 type: type,
-                f_menu_id: f_menu_id,
+                f_menu_id: doc.f_menu_id,
                 auth_flag: doc.auth_flag,
                 menu_name: doc.menu_name,
                 menu_path: doc.menu_path,
