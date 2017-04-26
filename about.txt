@@ -3,10 +3,10 @@ AdminLTE https://github.com/almasaeed2010/AdminLTE
 
 express:  http://expressjs.com
 vue: https://cn.vuejs.org/
+Vue.js devtools for chrome
+
 sequelize: http://sequelize.readthedocs.io/en/latest/
 
 tables:
 bootstrap-table: http://bootstrap-table.wenzhixin.net.cn/
 handsontable: brave! https://handsontable.com/
-
-
