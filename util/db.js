@@ -9,7 +9,7 @@ const logger = common.createLogger('db');
 
 logger.debug('init sequelize...');
 
-var sequelize = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
+let sequelize = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
     host: config.mysql.host,
     dialect: config.mysql.dialect,
     pool: {
