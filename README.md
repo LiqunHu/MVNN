@@ -1,4 +1,4 @@
-MVPN
+MVNN
 =========================
 This is a restful web project.<br/>
 Mysql + Vue2 + node + nginx Project.
