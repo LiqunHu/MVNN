@@ -6,7 +6,7 @@ var config = {
         username: 'root',
         password: '123456',
         host: 'localhost',
-        port: 33306
+        port: 3306
     },
     redisCache: true,
     // for redis
