@@ -10,3 +10,7 @@ sequelize: http://sequelize.readthedocs.io/en/latest/
 tables:
 bootstrap-table: http://bootstrap-table.wenzhixin.net.cn/
 handsontable: brave! https://handsontable.com/
+
+docker:
+https://www.docker.com/
+china mirror https://07myvdj8.mirror.aliyuncs.com
