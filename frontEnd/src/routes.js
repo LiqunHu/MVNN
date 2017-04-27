@@ -22,7 +22,7 @@ export default new VueRouter({
     ]},
     { path: '/example',           component: resolve => require(['./components/mainSystem'], resolve),
       children: [
-        { path: 'example1',   component: resolve => require(['./views/example/example1'], resolve) },
+        { path: 'example',   component: resolve => require(['./views/example/example'], resolve) },
     ]}
   ]
 })
