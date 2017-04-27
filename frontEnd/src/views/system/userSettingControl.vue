@@ -181,9 +181,9 @@
 </template>
 <script>
 import $ from 'jquery'
-var common = require('commonFunc')
-var CryptoJS = require('crypto-js')
-var apiUrl = '/api/system/userSettingControl?method='
+const common = require('commonFunc')
+const CryptoJS = require('crypto-js')
+const apiUrl = '/api/system/userSettingControl?method='
 
 export default {
   data: function () {
@@ -201,7 +201,7 @@ export default {
     canReuse: false
   },
   mounted: function () {
-    var _self = this
+    let _self = this
 
     function CropAvatar($element) {
       this.$container = $element;
@@ -267,13 +267,13 @@ export default {
       },
 
       initPreview: function () {
-        var url = this.$avatar.attr('src');
+        let url = this.$avatar.attr('src');
 
         this.$avatarPreview.empty().html('<img src="' + url + '">');
       },
 
       initIframe: function () {
-        var target = 'upload-iframe-' + (new Date()).getTime(),
+        let target = 'upload-iframe-' + (new Date()).getTime(),
             $iframe = $('<iframe>').attr({
               name: target,
               src: ''
@@ -285,7 +285,7 @@ export default {
 
           // respond response
           $iframe.on('load', function () {
-            var data;
+            let data;
 
             try {
               data = $(this).contents().find('body').text();
@@ -320,7 +320,7 @@ export default {
       },
 
       change: function () {
-        var files,
+        let files,
             file;
 
         if (this.support.datauri) {
@@ -359,7 +359,7 @@ export default {
       },
 
       rotate: function (e) {
-        var data;
+        let data;
 
         if (this.active) {
           data = $(e.target).data();
@@ -379,7 +379,7 @@ export default {
       },
 
       startCropper: function () {
-        var _this = this;
+        let _this = this;
 
         if (this.active) {
           this.$img.cropper('replace', this.url);
@@ -391,7 +391,7 @@ export default {
             preview: this.$avatarPreview.selector,
             strict: false,
             crop: function (data) {
-              var json = [
+              let json = [
                     '{"x":' + data.x,
                     '"y":' + data.y,
                     '"height":' + data.height,
@@ -416,7 +416,7 @@ export default {
       },
 
       ajaxUpload: function () {
-        var url = this.$avatarForm.attr('action'),
+        let url = this.$avatarForm.attr('action'),
             data = new FormData(this.$avatarForm[0]),
             _this = this;
 
@@ -494,7 +494,7 @@ export default {
       },
 
       alert: function (msg) {
-        var $alert = [
+        let $alert = [
               '<div class="alert alert-danger avater-alert">',
                 '<button type="button" class="close" data-dismiss="alert">&times;</button>',
                 msg,
@@ -512,9 +512,9 @@ export default {
   methods: {
     changeInfo: function (event) {
       // `this` inside methods points to the Vue instance
-      var _self = this
+      let _self = this
       _self.$http.post(apiUrl+ 'midify', {name: _self.inputName, mobile: _self.inputMobile, headImg: _self.headImg}).then((response) => {
-        var retData = response.data['data']
+        let retData = response.data['data']
         common.dealSuccessCommon('信息修改成功, 请重新登录')
         common.clearStoreData()
         _self.$router.push({ path: '/' })
@@ -525,9 +525,9 @@ export default {
       })
     },
     changePwd: function (event) {
-      var _self = this
+      let _self = this
       _self.$http.post(apiUrl+ 'setpwd', {oldPwd: CryptoJS.MD5(this.oldPassword).toString(), pwd: CryptoJS.MD5(this.password).toString()}).then((response) => {
-        var retData = response.data['data']
+        let retData = response.data['data']
         common.dealSuccessCommon('修改密码成功, 请重新登录')
         common.clearStoreData()
         _self.$router.push({ path: '/' })
