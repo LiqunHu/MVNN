@@ -1,7 +1,6 @@
 const log4js = require('log4js');
 const express = require('express');
 const path = require('path');
-//var logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const fs = require('fs');
@@ -55,7 +54,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-if (app.get('env') === 'development') {
+if (app.get('env') === 'test') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.send({
