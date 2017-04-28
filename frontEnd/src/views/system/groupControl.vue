@@ -54,8 +54,8 @@
 </template>
 <script>
 import $ from 'jquery'
-var common = require('commonFunc')
-var apiUrl = '/api/system/groupcontrol?method='
+const common = require('../../assets/js/common')
+const apiUrl = '/api/system/groupcontrol?method='
 
 export default {
   data: function () {
@@ -67,11 +67,11 @@ export default {
   },
   name: 'groupControl',
   mounted: function () {
-    var _self = this
-    var $table = $('#table')
+    let _self = this
+    let $table = $('#table')
     function getData () {
       _self.$http.post(apiUrl + 'search', {}).then((response) => {
-        var retdata = response.data.info
+        let retdata = response.data.info
         $table.bootstrapTable('load', {
           data: retdata
         })
@@ -117,7 +117,7 @@ export default {
 
     function initPage () {
       _self.$http.post(apiUrl + 'init', {}).then((response) => {
-        var retData = response.data.info
+        let retData = response.data.info
         _self.pagePara = $.extend(true, {}, retData)
         common.initSelect2($('#stateA'), retData['statusInfo'])
         initTable()
@@ -140,14 +140,14 @@ export default {
       $('#AddModal').modal('show')
     },
     addGp: function (event) {
-      var _self = this
-      var workRow = {
+      let _self = this
+      let workRow = {
         'id': '',
         'name': _self.nameA,
         'state': $('#stateA').val()[0]
       }
       _self.$http.post(apiUrl + 'add', workRow).then((response) => {
-        var retData = response.data.info
+        let retData = response.data.info
         $('#table').bootstrapTable('insertRow', { index: 0, row: retData })
         _self.nameA = ''
         $('#stateA').val(null).trigger('change')

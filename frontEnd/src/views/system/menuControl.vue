@@ -101,7 +101,7 @@
 </template>
 <script>
 import $ from 'jquery'
-const common = require('commonFunc')
+const common = require('../../assets/js/common')
 const apiUrl = '/api/system/menucontrol?method='
 
 function getData(obj) {

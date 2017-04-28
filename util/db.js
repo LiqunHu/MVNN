@@ -11,6 +11,7 @@ logger.debug('init sequelize...');
 
 let sequelize = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
     host: config.mysql.host,
+    port: config.mysql.port,
     dialect: config.mysql.dialect,
     pool: {
         max: 5, // max
