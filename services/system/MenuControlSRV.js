@@ -123,7 +123,7 @@ async function addAct(req, res) {
             }
 
             if (type === GLBConfig.MTYPE_LEAF) {
-                if (doc.menu_path){
+                if (!doc.menu_path){
                     common.sendError(res, 'menu_04');
                     return
                 }
