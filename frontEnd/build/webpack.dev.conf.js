@@ -1,13 +1,13 @@
-var webpack = require('webpack')
-var config = require('./webpack.base.conf')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+const webpack = require('webpack')
+const config = require('./webpack.base.conf')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 config.output.filename = '[name].js'
 config.output.chunkFilename = '[id].js'
 
-var SOURCE_MAP = true
+let SOURCE_MAP = true
 
 config.devtool = SOURCE_MAP ? 'eval-source-map' : false
 

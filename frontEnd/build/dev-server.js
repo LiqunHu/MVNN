@@ -1,14 +1,14 @@
-var path = require('path')
-var express = require('express')
-var webpack = require('webpack')
-var proxyMiddleware = require('http-proxy-middleware')
-var config = require('./webpack.dev.conf')
-var favicon = require('express-favicon')
+const path = require('path')
+const express = require('express')
+const webpack = require('webpack')
+const proxyMiddleware = require('http-proxy-middleware')
+const config = require('./webpack.dev.conf')
+const favicon = require('express-favicon')
 
-var app = express()
-var compiler = webpack(config)
+const app = express()
+const compiler = webpack(config)
 
-var proxyTable = {
+let proxyTable = {
     '/api': 'http://localhost:9090',
     '/static': 'http://localhost:9090',
     '/temp': 'http://localhost:9090'
@@ -16,7 +16,7 @@ var proxyTable = {
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
-  var options = proxyTable[context]
+  let options = proxyTable[context]
   if (typeof options === 'string') {
     options = {
       target: options,

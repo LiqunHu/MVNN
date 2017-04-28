@@ -1,4 +1,4 @@
-var config = {
+const config = {
     // for mysql`
     mysql: {
         dialect: 'mysql',
