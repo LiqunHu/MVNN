@@ -19,7 +19,8 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.js',
       'vue-router$': 'vue-router/dist/vue-router.common.js',
-      src: path.resolve(__dirname, '../src')
+      src: path.resolve(__dirname, '../src'),
+      commonFunc: path.resolve(__dirname, '../src/assets/js/common.js')
     },
     extensions: ['.js', '.vue', '.less']
   },
