@@ -95,7 +95,6 @@ async function addAct(req, res) {
         if (usergroup) {
             let adduser = await tb_user.findOne({
                 where: {
-                    domain_id: user.domain_id,
                     username: doc.username
                 }
             });

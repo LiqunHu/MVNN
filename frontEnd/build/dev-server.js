@@ -9,9 +9,7 @@ const app = express()
 const compiler = webpack(config)
 
 let proxyTable = {
-    '/api': 'http://localhost:9090',
-    '/static': 'http://localhost:9090',
-    '/temp': 'http://localhost:9090'
+    '/api': 'http://localhost:9090'
 }
 
 // proxy api requests
@@ -27,8 +25,8 @@ Object.keys(proxyTable).forEach(function (context) {
 })
 
 // 设置资源目录
-app.use('/static', express.static(path.join(__dirname, '../../public')))
-app.use('/temp', express.static(path.join(__dirname, '../../public')))
+app.use('/static', express.static(path.join(__dirname, '../public/static')))
+app.use('/temp', express.static(path.join(__dirname, '../public/temp')))
 
 app.use(favicon(path.join(__dirname, '../favicon.ico')))
 // handle fallback for HTML5 history API

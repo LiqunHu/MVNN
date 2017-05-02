@@ -5,7 +5,6 @@ const favicon = require('express-favicon')
 
 app.use('/webstatic', express.static(path.join(__dirname, './dist/static/')))
 app.use('/data', express.static(path.join(__dirname, './src/data')))
-app.use('/img', express.static(path.join(__dirname, './src/assets/img')))
 
 app.use(favicon(path.join(__dirname, './favicon.ico')))
 

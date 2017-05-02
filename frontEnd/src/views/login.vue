@@ -40,7 +40,7 @@
 </template>
 <script>
 import $ from 'jquery'
-var common = require('commonFunc')
+const common = require('commonFunc')
 
 export default{
   name: 'login',
@@ -59,9 +59,9 @@ export default{
   },
   methods: {
     login: function (event) {
-      var encInfo = common.aesEncryptModeCFB(this.username, this.password)
+      let encInfo = common.aesEncryptModeCFB(this.username, this.password)
       this.$http.post('/api/auth', { domain: 'adminCo',username: this.username, identifyCode: encInfo[1], magicNo: encInfo[0] }).then((response) => {
-        var token = response.headers.get('authorization')
+        let token = response.headers.get('authorization')
 
         if (token) {
           common.clearStoreData()

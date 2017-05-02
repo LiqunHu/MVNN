@@ -181,7 +181,7 @@
 </template>
 <script>
 import $ from 'jquery'
-const common = require('../../assets/js/common')
+const common = require('commonFunc')
 const CryptoJS = require('crypto-js')
 const apiUrl = '/api/system/userSettingControl?method='
 

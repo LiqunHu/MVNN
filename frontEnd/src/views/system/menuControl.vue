@@ -101,7 +101,7 @@
 </template>
 <script>
 import $ from 'jquery'
-const common = require('../../assets/js/common')
+const common = require('commonFunc')
 const apiUrl = '/api/system/menucontrol?method='
 
 function getData(obj) {
@@ -133,7 +133,9 @@ export default {
     data: function() {
         return {
             pagePara: {},
-            currentRow: {},
+            currentRow: {
+                menu_icon: ''
+            },
             oldRow: {}
         }
     },
@@ -151,7 +153,7 @@ export default {
                     if (iconTarget.hasClass('glyphicon-minus')) {
                         iconTarget.removeClass('glyphicon-minus').addClass('glyphicon-plus')
                         for (let indexH = 0; indexH < tableData.length; indexH++) {
-                            if (tableData[indexH].f_menu_id === parentMenuID) {
+                            if (tableData[indexH].f_menu_id === parseInt(parentMenuID)) {
                                 $menuTable.bootstrapTable('hideRow', {
                                     index: indexH
                                 })
@@ -160,7 +162,7 @@ export default {
                     } else {
                         iconTarget.removeClass('glyphicon-plus').addClass('glyphicon-minus')
                         for (let indexE = 0; indexE < tableData.length; indexE++) {
-                            if (tableData[indexE].f_menu_id === parentMenuID) {
+                            if (tableData[indexE].f_menu_id === parseInt(parentMenuID)) {
                                 $menuTable.bootstrapTable('showRow', {
                                     index: indexE
                                 })
@@ -276,7 +278,7 @@ export default {
             this.$http.post(apiUrl + 'add', this.currentRow).then((response) => {
                 initPage(_self)
                 getData(_self)
-                _self.currentRow = Object.create({})
+                _self.currentRow = {}
                 console.log('add success')
             }, (response) => {
                 console.log('add error')

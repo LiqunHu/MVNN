@@ -66,7 +66,7 @@
 </template>
 <script>
 import $ from 'jquery'
-const common = require('../../assets/js/common')
+const common = require('commonFunc')
 const apiUrl = '/api/system/operatorcontrol?method='
 
 export default {

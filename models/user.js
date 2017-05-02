@@ -13,7 +13,8 @@ module.exports = db.defineModel('tbl_user', {
     },
     username: {
         type: db.STRING(100),
-        allowNull: false
+        allowNull: false,
+        unique : true
     },
     email: {
         type: db.STRING(100),
