@@ -1,0 +1,22 @@
+#!/bin/sh
+rm -rf store
+rm -rf jquery
+rm -rf jquery-ui
+rm -rf bootstrap
+rm -rf select2
+rm -rf font-awesome
+rm -rf bootstrap3-table
+rm -rf bootstrap-datepicker
+rm -rf bootstrap-daterangepicker
+rm -rf bootstrap-dialog
+rm -rf lightbox2
+rm -rf jquery-slimscroll
+rm -rf x-editable
+rm -rf jquery-sparkline
+rm -rf fastclick
+rm -rf raphael
+rm -rf moment
+rm -rf tableexport.jquery.plugin
+rm -rf cropper
+rm -rf crypto-js
+rm -rf ckeditor
