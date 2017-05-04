@@ -47,6 +47,7 @@ app.post('/api/system/groupControl', services.GroupControlSRV.GroupControlResour
 app.post('/api/system/menuControl', services.MenuControlSRV.MenuControlResource);
 app.post('/api/system/groupMenuControl', services.GroupMenuControlSRV.GroupMenuControlResource);
 app.post('/api/system/operatorControl', services.OperatorControlSRV.OperatorControlResource);
+app.post('/api/system/userSetting', services.UserSettingSRV.UserSettingResource);
 
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

@@ -17,8 +17,8 @@
           <!-- Profile Image -->
           <div class="box box-primary">
             <div class="box-body box-profile">
-              <img class="profile-user-img img-responsive img-circle" :src="userinfo['headImg']" alt="User profile picture">
-              <h3 class="profile-username text-center">{{ userinfo['name'] }}</h3>
+              <img class="profile-user-img img-responsive img-circle" :src="userinfo.avatar" alt="User profile picture">
+              <h3 class="profile-username text-center">{{ userinfo.name }}</h3>
             </div>
             <!-- /.box-body -->
           </div>
@@ -52,14 +52,14 @@
                       <div class="container" id="crop-avatar" style="padding-left: 0;">
                         <!-- Current avatar -->
                         <div class="avatar-view" title="" data-original-title="Change the avatar">
-                          <img :src="userinfo['headImg']" alt="Avatar">
+                          <img :src="userinfo.avatar" alt="Avatar">
                         </div>
 
                         <!-- Cropping modal -->
                         <div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1" style="display: none;">
                           <div class="modal-dialog modal-lg">
                             <div class="modal-content">
-                              <form class="avatar-form" action="/api/system/userSettingControl?method=upload" enctype="multipart/form-data" method="post">
+                              <form class="avatar-form" enctype="multipart/form-data" method="post">
                                 <div class="modal-header">
                                   <button class="close" data-dismiss="modal" type="button">×</button>
                                   <h4 class="modal-title" id="avatar-modal-label">更换头像</h4>
@@ -183,7 +183,7 @@
 import $ from 'jquery'
 const common = require('commonFunc')
 const CryptoJS = require('crypto-js')
-const apiUrl = '/api/system/userSettingControl?method='
+const apiUrl = '/api/system/userSetting?method='
 
 export default {
   data: function () {
@@ -191,7 +191,7 @@ export default {
       userinfo: common.getStoreData('userinfo'),
       inputName: '',
       inputMobile: '',
-      headImg: '',
+      avatar: '',
       oldPassword: '',
       password: ''
     }
@@ -223,7 +223,6 @@ export default {
       this.$avatarPreview = this.$avatarModal.find('.avatar-preview');
 
       this.init();
-      console.log(this);
     }
 
     CropAvatar.prototype = {
@@ -420,7 +419,7 @@ export default {
             data = new FormData(this.$avatarForm[0]),
             _this = this;
 
-        $.ajax(url, {
+        $.ajax(apiUrl + 'upload', {
           type: 'post',
           data: data,
           dataType: 'json',
@@ -513,8 +512,8 @@ export default {
     changeInfo: function (event) {
       // `this` inside methods points to the Vue instance
       let _self = this
-      _self.$http.post(apiUrl+ 'midify', {name: _self.inputName, mobile: _self.inputMobile, headImg: _self.headImg}).then((response) => {
-        let retData = response.data['data']
+      _self.$http.post(apiUrl+ 'midify', {name: _self.inputName, mobile: _self.inputMobile, avatar: _self.avatar}).then((response) => {
+        let retData = response.data.info
         common.dealSuccessCommon('信息修改成功, 请重新登录')
         common.clearStoreData()
         _self.$router.push({ path: '/' })
@@ -527,7 +526,7 @@ export default {
     changePwd: function (event) {
       let _self = this
       _self.$http.post(apiUrl+ 'setpwd', {oldPwd: CryptoJS.MD5(this.oldPassword).toString(), pwd: CryptoJS.MD5(this.password).toString()}).then((response) => {
-        let retData = response.data['data']
+        let retData = response.data.info
         common.dealSuccessCommon('修改密码成功, 请重新登录')
         common.clearStoreData()
         _self.$router.push({ path: '/' })
@@ -540,7 +539,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .avatar-view {
   display: block;
   height: 178px;

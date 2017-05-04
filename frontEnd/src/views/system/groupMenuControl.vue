@@ -220,7 +220,7 @@ methods: {
 }
 }
 </script>
-<style>
+<style scoped>
 .indent {
     width: 16px;
     height: 16px;

@@ -4,6 +4,8 @@ module.exports = {
     group_02: '用户组不存在',
     group_02: '叶子节点没有路径',
     group_03: '用户组下存在用户',
+    usersetting_01: '密码错误',
+    usersetting_02: '用户不存在',
     operator_01: '组不存在',
     operator_02: '用户已经存在',
     operator_03: '用户不存在',

@@ -1,3 +1,4 @@
+const formidable = require('formidable');
 const log4js = require('log4js');
 const config = require('../config');
 const Error = require('./Error');
@@ -8,7 +9,7 @@ const Error = require('./Error');
 // 例子：
 // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
 // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
-Date.prototype.Format = function (fmt) { //author: meizz
+Date.prototype.Format = function(fmt) { //author: meizz
     let o = {
         "M+": this.getMonth() + 1, //月份
         "d+": this.getDate(), //日
@@ -20,7 +21,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
     };
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (let k in o)
-    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
 
@@ -39,7 +40,7 @@ function sendError(res, errno) {
     let errnores = arguments[1] ? arguments[1] : -1;
     let msgres = arguments[2] ? arguments[2] : 'error';
     let sendData;
-    if(errnores in Error){
+    if (errnores in Error) {
         sendData = {
             errno: errnores,
             msg: Error[errnores]
@@ -78,9 +79,27 @@ function createLogger(name) {
     return logger;
 }
 
+function fileSave(req) {
+    return new Promise(function(resolve, reject) {
+        console.log(req);
+        if (req.is('multipart/*')) {
+            let form = new formidable.IncomingForm(config.uploadOptions);
+            form.parse(req, (err, fields, files) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve('ok');
+            })
+        } else {
+            reject('content-type error');
+        }
+    })
+}
+
 module.exports = {
     sendData: sendData,
     sendError: sendError,
     sendFault: sendFault,
-    createLogger: createLogger
+    createLogger: createLogger,
+    fileSave: fileSave
 };

@@ -50,5 +50,5 @@ export default{
     errMsg: 'errMsg'
   })
 }
-</script>
+</script scoped>
 </style>

@@ -14,7 +14,7 @@ export default new VueRouter({
         { path: 'error',                  component: resolve => require(['./components/errpage'], resolve) },
         { path: 'error401',               component: resolve => require(['./components/err401'], resolve) },
         { path: 'home',                   component: resolve => require(['./views/home'], resolve) },
-        { path: 'userSettingControl',     component: resolve => require(['./views/system/userSettingControl'], resolve) },
+        { path: 'userSetting',     component: resolve => require(['./views/system/userSetting'], resolve) },
         { path: 'operatorControl',        component: resolve => require(['./views/system/operatorControl'], resolve) },
         { path: 'groupControl',           component: resolve => require(['./views/system/groupControl'], resolve) },
         { path: 'menuControl',            component: resolve => require(['./views/system/menuControl'], resolve) },

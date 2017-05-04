@@ -112,7 +112,6 @@ async function addAct(req, res) {
                     password: GLBConfig.INITPASSWORD,
                     name: doc.name,
                     gender: doc.gender,
-                    avatar: doc.avatar,
                     address: doc.address,
                     state: doc.state,
                     city: doc.city,
