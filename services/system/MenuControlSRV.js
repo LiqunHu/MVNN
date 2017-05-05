@@ -139,7 +139,7 @@ async function addAct(req, res) {
                 menu_name: doc.menu_name,
                 menu_path: doc.menu_path,
                 menu_icon: doc.menu_icon,
-                show_flag: m.show_flag,
+                show_flag: doc.show_flag,
                 menu_index: doc.menu_index
             })
             common.sendData(res, menu);

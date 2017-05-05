@@ -12,6 +12,7 @@ module.exports = {
     menu_01: '菜单已经存在',
     menu_02: '菜单不存在',
     menu_03: '菜单下有子项',
+    menu_04: '未配置路径',
     auth_01: 'domain is missing',
     auth_02: 'username is missing',
     auth_03: 'identifyCode is missing',

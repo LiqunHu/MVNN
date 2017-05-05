@@ -20,7 +20,6 @@ exports.UserSettingResource = (req, res) => {
 }
 
 async function setpwdAct(req, res) {
-    let returnData = {}
     let doc = req.body
     let user = req.user;
 
