@@ -8,7 +8,7 @@ const GLBConfig = require('../util/GLBConfig');
 // table
 const tb_menu = model.menu;
 
-exports.AuthMiddleware = async (req, res, next) => {
+exports.AuthMiddleware = async(req, res, next) => {
     try {
         let menuList = await tb_menu.findAll({
             where: {
@@ -19,8 +19,10 @@ exports.AuthMiddleware = async (req, res, next) => {
 
         let menus = {};
         for (let m of menuList) {
-            let ma = m.menu_path.split('/');
-            menus[ma[ma.length - 1].toUpperCase()] = m.auth_flag
+            if (m.menu_path) {
+                let ma = m.menu_path.split('/');
+                menus[ma[ma.length - 1].toUpperCase()] = m.auth_flag
+            }
         }
 
         let patha = req.path.split('/')

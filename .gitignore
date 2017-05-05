@@ -1,5 +1,6 @@
 *.log
 public/temp
+public/files
 mysql
 .idea
 node_modules

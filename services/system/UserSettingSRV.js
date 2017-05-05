@@ -24,7 +24,7 @@ async function setpwdAct(req, res) {
     let doc = req.body
     let user = req.user;
 
-    if(user.password != doc.oldPwd){
+    if (user.password != doc.oldPwd) {
         common.sendError(res, 'usersetting_01');
         return
     }
@@ -36,11 +36,11 @@ async function setpwdAct(req, res) {
         }
     });
 
-    if(modiuser){
+    if (modiuser) {
         modiuser.password = doc.pwd
         await modiuser.save()
         common.sendData(res);
-    }else{
+    } else {
         common.sendError(res, 'usersetting_02');
         return
     }
@@ -49,19 +49,23 @@ async function setpwdAct(req, res) {
 async function modifyAct(req, res) {
     try {
         let doc = req.body
-        let user = req.user
 
         let modiuser = await tb_user.findOne({
             where: {
-                domain_id: user.domain_id,
-                id: doc.old.id,
+                id: doc.id,
                 state: GLBConfig.ENABLE
             }
         });
 
-        if(modiuser) {
-            modiuser.avatar = doc.new.avatar
-            modiuser.phone = doc.new.phone
+        if (modiuser) {
+            if (doc.avatar) {
+                if (doc.avatar != modiuser.avatar) {
+                    modiuser.avatar = await common.fileMove(doc.avatar, 'avatar')
+                }
+            }
+
+            modiuser.name = doc.name
+            modiuser.phone = doc.phone
             await modiuser.save()
             delete modiuser.password
             common.sendData(res, modiuser)
@@ -76,10 +80,14 @@ async function modifyAct(req, res) {
     }
 }
 
+
+
 async function uploadAct(req, res) {
     try {
         let uploadurl = await common.fileSave(req)
-        common.sendData(res)
+        common.sendData(res, {
+            uploadurl: uploadurl
+        })
     } catch (error) {
         common.sendFault(res, error)
         return

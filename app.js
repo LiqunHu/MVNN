@@ -22,7 +22,8 @@ app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(logger('dev'));
+app.use('/temp', express.static(path.join(__dirname, 'public/temp')))
+app.use('/files', express.static(path.join(__dirname, 'public/files')))
 app.use(log4js.connectLogger(log4js.getLogger("http"), {
     level: 'auto'
 }));

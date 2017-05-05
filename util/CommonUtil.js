@@ -1,4 +1,10 @@
 const formidable = require('formidable');
+const gm = require('gm').subClass({
+    imageMagick: true
+});
+const uuid = require('uuid');
+const path = require('path');
+const fs = require('fs');
 const log4js = require('log4js');
 const config = require('../config');
 const Error = require('./Error');
@@ -81,14 +87,26 @@ function createLogger(name) {
 
 function fileSave(req) {
     return new Promise(function(resolve, reject) {
-        console.log(req);
+        let filename = uuid.v4() + '.jpg';
+        let url = config.tmpUrlBase + filename;
+        let tmpFile = path.join(__dirname, '../' + config.uploadOptions.uploadDir + '/' + filename);
         if (req.is('multipart/*')) {
             let form = new formidable.IncomingForm(config.uploadOptions);
             form.parse(req, (err, fields, files) => {
                 if (err) {
                     reject(err);
                 }
-                resolve('ok');
+                if (files.avatar_file) {
+                    let avatar_data = JSON.parse(fields.avatar_data);
+                    gm(files.avatar_file.path)
+                        .setFormat("jpeg")
+                        .crop(avatar_data.width, avatar_data.height, avatar_data.x, avatar_data.y)
+                        .rotate('white', fields.avatar_data.rotate)
+                        .write(tmpFile, function(err) {
+                            if (!err) resolve(url);
+                            reject(err);
+                        })
+                }
             })
         } else {
             reject('content-type error');
@@ -96,10 +114,67 @@ function fileSave(req) {
     })
 }
 
+function fileMove(url, mode) {
+    return new Promise(function(resolve, reject) {
+        if (url) {
+            let fileName = path.basename(url)
+            let relPath = ''
+            let today = new Date()
+            if (mode == 'avatar') {
+                relPath = 'avatar/' + today.getFullYear() + '/' + today.getMonth() + '/' + today.getDate() + '/'
+            } else if (mode == 'upload') {
+                relPath = 'upload/' + today.getFullYear() + '/' + today.getMonth() + '/' + today.getDate() + '/'
+            } else {
+                reject('mode error');
+            }
+
+            let svPath = path.join(__dirname, '../' + config.filesDir + '/' + relPath);
+
+            if (!fs.existsSync(svPath)) {
+                mkdirssync(svPath)
+            }
+
+            let tempfile = path.join(__dirname, '../' + config.uploadOptions.uploadDir + '/' + fileName);
+            fs.renameSync(tempfile, path.join(svPath, fileName))
+
+            resolve(config.fileUrlBase + relPath + fileName);
+        } else {
+            reject('url error');
+        }
+    })
+}
+
+function mkdirssync(dirpath) {
+    try {
+        if (!fs.existsSync(dirpath)) {
+            let pathtmp;
+            dirpath.split(/[/\\]/).forEach(function(dirname) { //这里指用/ 或\ 都可以分隔目录  如  linux的/usr/local/services   和windows的 d:\temp\aaaa
+                if (dirname) {
+                    if (pathtmp) {
+                        pathtmp = path.join(pathtmp, dirname);
+                    } else {
+                        pathtmp = '/' + dirname;
+                    }
+                    if (!fs.existsSync(pathtmp)) {
+                        if (!fs.mkdirSync(pathtmp)) {
+                            return false;
+                        }
+                    }
+                }
+            });
+        }
+        return true;
+    } catch (e) {
+        console.log("create director fail! path=" + dirpath + " errorMsg:" + e);
+        return false;
+    }
+}
+
 module.exports = {
     sendData: sendData,
     sendError: sendError,
     sendFault: sendFault,
     createLogger: createLogger,
-    fileSave: fileSave
+    fileSave: fileSave,
+    fileMove: fileMove
 };

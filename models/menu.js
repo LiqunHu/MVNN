@@ -17,7 +17,8 @@ module.exports = db.defineModel('tbl_menu', {
     menu_name: db.STRING(100),
     menu_path: {
         type: db.STRING(100),
-        allowNull: true
+        defaultValue: '',
+        allowNull: false
     },
     menu_icon: {
         type: db.STRING(100),
