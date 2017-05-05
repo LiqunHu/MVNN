@@ -91,23 +91,27 @@ function fileSave(req) {
         let url = config.tmpUrlBase + filename;
         let tmpFile = path.join(__dirname, '../' + config.uploadOptions.uploadDir + '/' + filename);
         if (req.is('multipart/*')) {
-            let form = new formidable.IncomingForm(config.uploadOptions);
-            form.parse(req, (err, fields, files) => {
-                if (err) {
-                    reject(err);
-                }
-                if (files.avatar_file) {
-                    let avatar_data = JSON.parse(fields.avatar_data);
-                    gm(files.avatar_file.path)
-                        .setFormat("jpeg")
-                        .crop(avatar_data.width, avatar_data.height, avatar_data.x, avatar_data.y)
-                        .rotate('white', fields.avatar_data.rotate)
-                        .write(tmpFile, function(err) {
-                            if (!err) resolve(url);
-                            reject(err);
-                        })
-                }
-            })
+            try {
+                let form = new formidable.IncomingForm(config.uploadOptions);
+                form.parse(req, (err, fields, files) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    if (files.avatar_file) {
+                        let avatar_data = JSON.parse(fields.avatar_data);
+                        gm(files.avatar_file.path)
+                            .setFormat("jpeg")
+                            .crop(avatar_data.width, avatar_data.height, avatar_data.x, avatar_data.y)
+                            .rotate('white', fields.avatar_data.rotate)
+                            .write(tmpFile, function(err) {
+                                if (!err) resolve(url);
+                                reject(err);
+                            })
+                    }
+                })
+            } catch (error) {
+                reject(error);
+            }
         } else {
             reject('content-type error');
         }
