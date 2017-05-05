@@ -34,7 +34,7 @@
                 </span>
               </a>
               <ul class="treeview-menu">
-                <template v-for="sItem in item.sub_menu">
+                <template v-for="sItem in item.sub_menu" v-if="sItem.show_flag === '1'">
                   <li><router-link :to="sItem.menu_path"><i class="fa fa-circle-o"></i> {{ sItem.menu_name }}</router-link></li>
                 </template>
               </ul>

@@ -516,7 +516,6 @@ export default {
             // `this` inside methods points to the Vue instance
             let _self = this
             _self.$http.post(apiUrl + 'modify', {
-                id: _self.userinfo.id,
                 name: _self.userinfo.name,
                 phone: _self.inputMobile,
                 avatar: _self.avatar
@@ -537,7 +536,7 @@ export default {
             let _self = this
             _self.$http.post(apiUrl + 'setpwd', {
                 oldPwd: CryptoJS.MD5(this.oldPassword).toString(),
-                pwd: CryptoJS.MD5(this.password).toString()
+                pwd: this.password
             }).then((response) => {
                 let retData = response.data.info
                 common.dealSuccessCommon('修改密码成功, 请重新登录')

@@ -45,6 +45,7 @@ async function initAct(req, res) {
     }
     returnData.fMenuInfo = menuData
     returnData.authInfo = GLBConfig.AUTHINFO
+    returnData.showInfo = GLBConfig.SHOWINFO
 
     common.sendData(res, returnData)
 }
@@ -82,6 +83,7 @@ async function iterationMenu(fMenuID) {
                 menu_name: m.menu_name,
                 menu_path: m.menu_path,
                 menu_icon: m.menu_icon,
+                show_flag: m.show_flag,
                 menu_index: m.menu_index
             })
             sub_menu = await iterationMenu(m.id);
@@ -95,6 +97,7 @@ async function iterationMenu(fMenuID) {
                 menu_name: m.menu_name,
                 menu_path: m.menu_path,
                 menu_icon: m.menu_icon,
+                show_flag: m.show_flag,
                 menu_index: m.menu_index
             })
         }
@@ -136,6 +139,7 @@ async function addAct(req, res) {
                 menu_name: doc.menu_name,
                 menu_path: doc.menu_path,
                 menu_icon: doc.menu_icon,
+                show_flag: m.show_flag,
                 menu_index: doc.menu_index
             })
             common.sendData(res, menu);

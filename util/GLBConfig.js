@@ -1,6 +1,6 @@
 module.exports = {
     INITPASSWORD: '123456',
-    REDISKEY:{
+    REDISKEY: {
         AUTH: 'REDISKEYAUTH'
     },
     MTYPE_ROOT: '00',
@@ -31,6 +31,19 @@ module.exports = {
             'id': '0',
             'value': '0',
             'text': '无效'
+        }
+    ],
+    TRUE: '1',
+    FALSE: '0',
+    SHOWINFO: [{
+            'id': '1',
+            'value': '1',
+            'text': '显示'
+        },
+        {
+            'id': '0',
+            'value': '0',
+            'text': '不显示'
         }
     ]
 };

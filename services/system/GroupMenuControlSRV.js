@@ -78,6 +78,7 @@ async function iterationMenu(fMenuID) {
                 menu_name: m.menu_name,
                 menu_path: m.menu_path,
                 menu_icon: m.menu_icon,
+                show_flag: m.show_flag,
                 menu_index: m.menu_index
             })
             sub_menu = await iterationMenu(m.id);
@@ -90,6 +91,7 @@ async function iterationMenu(fMenuID) {
                 menu_name: m.menu_name,
                 menu_path: m.menu_path,
                 menu_icon: m.menu_icon,
+                show_flag: m.show_flag,
                 menu_index: m.menu_index
             })
         }

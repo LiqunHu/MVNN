@@ -120,6 +120,7 @@ async function loginInit(user, session_token) {
                         auth_flag: item.auth_flag,
                         menu_name: item.menu_name,
                         menu_path: item.menu_path,
+                        show_flag: item.show_flag,
                         menu_icon: item.menu_icon
                     })
                 }
@@ -166,6 +167,7 @@ async function iterationMenu(GroupID, fMenuID) {
             menu_name: m.menu_name,
             menu_path: m.menu_path,
             menu_icon: m.menu_icon,
+            show_flag: m.show_flag,
             sub_menu: sub_menu
         })
     }

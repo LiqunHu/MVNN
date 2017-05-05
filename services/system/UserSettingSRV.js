@@ -49,10 +49,11 @@ async function setpwdAct(req, res) {
 async function modifyAct(req, res) {
     try {
         let doc = req.body
+        let user = req.user;
 
         let modiuser = await tb_user.findOne({
             where: {
-                id: doc.id,
+                id: user.id,
                 state: GLBConfig.ENABLE
             }
         });

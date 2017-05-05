@@ -1,4 +1,5 @@
 const db = require('../util/db');
+const GLBConfig = require('../util/GLBConfig');
 
 module.exports = db.defineModel('tbl_usergroupmenu', {
     usergroup_id: {
@@ -25,6 +26,10 @@ module.exports = db.defineModel('tbl_usergroupmenu', {
     menu_icon: {
         type: db.STRING(100),
         allowNull: true
+    },
+    show_flag: {
+        type: db.STRING(2),
+        defaultValue: GLBConfig.TRUE // 1 need auth, 0 not
     },
     menu_index: {
         type: db.INTEGER,

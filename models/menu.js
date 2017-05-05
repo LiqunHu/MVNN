@@ -24,6 +24,10 @@ module.exports = db.defineModel('tbl_menu', {
         type: db.STRING(100),
         allowNull: true
     },
+    show_flag: {
+        type: db.STRING(2),
+        defaultValue: GLBConfig.TRUE // 1 need auth, 0 not
+    },
     menu_index: {
         type: db.INTEGER,
         allowNull: false

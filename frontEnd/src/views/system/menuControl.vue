@@ -59,6 +59,10 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label>是否显示</label>
+                                <select class="form-control select2" multiple style="width:100%" id="show_flag"> </select>
+                            </div>
+                            <div class="form-group">
                                 <label>显示序号</label>
                                 <input class="form-control" v-model="currentRow.menu_index">
                             </div>
@@ -122,6 +126,7 @@ function initPage(obj) {
         obj.pagePara = JSON.parse(JSON.stringify(retData))
         common.initSelect2($('#f_menu_id'), retData.fMenuInfo)
         common.initSelect2($('#auth_flag'), retData.authInfo)
+        common.initSelect2($('#show_flag'), retData.showInfo)
         console.log('init success')
     }, (response) => {
         console.log('init error')
@@ -196,6 +201,15 @@ export default {
                 return ''
             }
 
+            function showFormatter(value, row) {
+                for (let i = 0; i < _self.pagePara.showInfo.length; i++) {
+                    if (_self.pagePara.showInfo[i].id === value) {
+                        return _self.pagePara.showInfo[i].text
+                    }
+                }
+                return ''
+            }
+
             $('#table').bootstrapTable({
                 height: common.getTableHeight(),
                 columns: [{
@@ -208,6 +222,7 @@ export default {
                     common.BTRowFormatWithFormatter('auth_flag', '权限校验', authFormatter),
                     common.BTRowFormat('menu_path', '功能路径'),
                     common.BTRowFormat('menu_icon', '菜单图标'),
+                    common.BTRowFormatWithFormatter('show_flag', '是否显示', showFormatter),
                     common.BTRowFormat('menu_index', '显示序号')
                 ],
                 onClickRow: function(row, $element) {
@@ -215,6 +230,7 @@ export default {
                     _self.oldRow = JSON.parse(JSON.stringify(row))
                     $('#f_menu_id').val([row.f_menu_id]).trigger('change')
                     $('#auth_flag').val([row.auth_flag]).trigger('change')
+                    $('#show_flag').val([row.show_flag]).trigger('change')
                 },
                 onRefresh: function() {
                     getData(_self)
@@ -274,6 +290,10 @@ export default {
             if (auth_flag) {
                 _self.currentRow.auth_flag = auth_flag[0]
             }
+            let show_flag = $('#show_flag').val()
+            if (show_flag) {
+                _self.currentRow.show_flag = show_flag[0]
+            }
 
             this.$http.post(apiUrl + 'add', this.currentRow).then((response) => {
                 initPage(_self)
@@ -294,6 +314,10 @@ export default {
             let auth_flag = $('#auth_flag').val()
             if (auth_flag) {
                 _self.currentRow.auth_flag = auth_flag[0]
+            }
+            let show_flag = $('#show_flag').val()
+            if (show_flag) {
+                _self.currentRow.show_flag = show_flag[0]
             }
             this.$http.post(apiUrl + 'modify', {
                 'old': _self.oldRow,
