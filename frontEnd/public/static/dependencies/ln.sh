@@ -1,4 +1,5 @@
 #!/bin/sh
+rm -rf jquery;ln -s ../../../node_modules/jquery jquery
 rm -rf store;ln -s ../../../node_modules/store store
 rm -rf bootstrap;ln -s ../../../node_modules/bootstrap bootstrap
 rm -rf select2;ln -s ../../../node_modules/select2 select2
