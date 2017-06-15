@@ -6,7 +6,9 @@ rm -rf font-awesome;ln -s ../../../node_modules/font-awesome font-awesome
 rm -rf bootstrap-table;ln -s ../../../node_modules/bootstrap-table bootstrap-table
 rm -rf bootstrap-datepicker;ln -s ../../../node_modules/bootstrap-datepicker bootstrap-datepicker
 rm -rf bootstrap-daterangepicker;ln -s ../../../node_modules/bootstrap-daterangepicker bootstrap-daterangepicker
+rm -rf bootstrap3-dialog;ln -s ../../../node_modules/bootstrap3-dialog bootstrap3-dialog
 rm -rf lightbox2;ln -s ../../../node_modules/lightbox2 lightbox2
+rm -rf jquery-ui;ln -s ../../../node_modules/jquery-ui jquery-ui
 rm -rf jquery-slimscroll;ln -s ../../../node_modules/jquery-slimscroll jquery-slimscroll
 rm -rf x-editable;ln -s ../../../node_modules/x-editable x-editable
 rm -rf jquery-sparkline;ln -s ../../../node_modules/jquery-sparkline jquery-sparkline

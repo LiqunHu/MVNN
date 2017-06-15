@@ -8,8 +8,9 @@ rm -rf font-awesome
 rm -rf bootstrap3-table
 rm -rf bootstrap-datepicker
 rm -rf bootstrap-daterangepicker
-rm -rf bootstrap-dialog
+rm -rf bootstrap3-dialog
 rm -rf lightbox2
+rm -rf jquery-ui
 rm -rf jquery-slimscroll
 rm -rf x-editable
 rm -rf jquery-sparkline
