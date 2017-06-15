@@ -1,12 +1,25 @@
 module.exports = {
     INITPASSWORD: '123456',
     REDISKEY: {
-        AUTH: 'REDISKEYAUTH'
+        AUTH: 'REDISKEYAUTH',
+        SMS: 'REDISKEYSMS'
     },
     MTYPE_ROOT: '00',
     MTYPE_LEAF: '01',
+    MTYPEINFO: [{
+            'id': '00',
+            'value': '00',
+            'text': '目录'
+        },
+        {
+            'id': '01',
+            'value': '01',
+            'text': '菜单'
+        }
+    ],
     TYPE_ADMINISTRATOR: '00',
-    TYPE_OPERATORGROUP: '01',
+    TYPE_OPERATOR: '01',
+    TYPE_CUSTOMER: '30',
     AUTH: '1',
     NOAUTH: '0',
     AUTHINFO: [{
@@ -35,15 +48,15 @@ module.exports = {
     ],
     TRUE: '1',
     FALSE: '0',
-    SHOWINFO: [{
+    TFINFO: [{
             'id': '1',
             'value': '1',
-            'text': '显示'
+            'text': '是'
         },
         {
             'id': '0',
             'value': '0',
-            'text': '不显示'
+            'text': '否'
         }
     ]
 };

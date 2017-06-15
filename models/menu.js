@@ -2,12 +2,17 @@ const db = require('../util/db');
 const GLBConfig = require('../util/GLBConfig');
 
 module.exports = db.defineModel('tbl_menu', {
-    type: {
+    menu_id: {
+        type: db.IDNO,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    menu_type: {
         type: db.STRING(3),
         allowNull: false
     },
     f_menu_id: {
-        type: db.ID,
+        type: db.IDNO,
         allowNull: false
     },
     auth_flag: {
@@ -22,11 +27,16 @@ module.exports = db.defineModel('tbl_menu', {
     },
     menu_icon: {
         type: db.STRING(100),
-        allowNull: true
+        defaultValue: '',
+        allowNull: false
     },
     show_flag: {
         type: db.STRING(2),
         defaultValue: GLBConfig.TRUE // 1 need auth, 0 not
+    },
+    domain_flag: {
+        type: db.STRING(2),
+        defaultValue: GLBConfig.FALSE // 1 need auth, 0 not
     },
     menu_index: {
         type: db.INTEGER,

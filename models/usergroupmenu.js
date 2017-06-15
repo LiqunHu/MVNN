@@ -3,14 +3,14 @@ const GLBConfig = require('../util/GLBConfig');
 
 module.exports = db.defineModel('tbl_usergroupmenu', {
     usergroup_id: {
-        type: db.ID,
+        type: db.IDNO,
         allowNull: false
     },
     menu_id: {
-        type: db.ID,
+        type: db.IDNO,
         allowNull: false
     },
-    type: {
+    menu_type: {
         type: db.STRING(3),
         allowNull: false
     },

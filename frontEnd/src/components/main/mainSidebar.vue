@@ -18,7 +18,7 @@
         <li class="header">主菜单</li>
         <template v-for="item in userinfo.menulist">
           <li class="treeview">
-            <template v-if="item.type === '01'">
+            <template v-if="item.menu_type === '01'">
               <router-link to="item.menuPath">
                 <i v-bind:class="'fa ' + item.menu_icon "></i> <span>{{ item.menu_name }}</span>
                 <span class="pull-right-container">
@@ -26,7 +26,7 @@
                 </span>
               </router-link>
             </template>
-            <template v-if="item.type === '00'">
+            <template v-if="item.menu_type === '00'">
               <a href="#">
                 <i :class="'fa ' + item.menu_icon"></i> <span> {{ item.menu_name }}</span>
                 <span class="pull-right-container">
@@ -47,8 +47,7 @@
   </aside>
 </template>
 <script>
-import $ from 'jquery'
-var common = require('commonFunc')
+const common = require('commonFunc')
 export default {
   name: 'mainMenu',
   data: function () {

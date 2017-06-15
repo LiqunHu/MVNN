@@ -1,7 +1,7 @@
 const fs = require('fs');
 const common = require('../../util/CommonUtil');
 const GLBConfig = require('../../util/GLBConfig');
-const logger = common.createLogger('MenuControlSRV');
+const logger = require('../../util/Logger').createLogger('MenuControlSRV');
 const model = require('../../model');
 
 // tables
@@ -33,19 +33,20 @@ async function initAct(req, res) {
 
     let menus = await tb_menu.findAll({
         where: {
-            type: GLBConfig.MTYPE_ROOT
+            menu_type: GLBConfig.MTYPE_ROOT
         }
     })
 
     for (let m of menus) {
         menuData.push({
-            'id': m.id,
+            'id': m.menu_id,
             'text': m.menu_name
         })
     }
     returnData.fMenuInfo = menuData
     returnData.authInfo = GLBConfig.AUTHINFO
-    returnData.showInfo = GLBConfig.SHOWINFO
+    returnData.tfInfo = GLBConfig.TFINFO
+    returnData.MTypeInfo = GLBConfig.MTYPEINFO
 
     common.sendData(res, returnData)
 }
@@ -74,30 +75,32 @@ async function iterationMenu(fMenuID) {
 
     for (let m of menus) {
         let sub_menu = [];
-        if (m.type === GLBConfig.MTYPE_ROOT) {
+        if (m.menu_type === GLBConfig.MTYPE_ROOT) {
             return_list.push({
-                id: m.id,
-                type: m.type,
+                menu_id: m.menu_id,
+                menu_type: m.menu_type,
                 f_menu_id: m.f_menu_id,
                 auth_flag: m.auth_flag,
                 menu_name: m.menu_name,
                 menu_path: m.menu_path,
                 menu_icon: m.menu_icon,
                 show_flag: m.show_flag,
+                domain_flag: m.domain_flag,
                 menu_index: m.menu_index
             })
-            sub_menu = await iterationMenu(m.id);
+            sub_menu = await iterationMenu(m.menu_id);
             return_list = return_list.concat(sub_menu)
         } else {
             return_list.push({
-                id: m.id,
-                type: m.type,
+                menu_id: m.menu_id,
+                menu_type: m.menu_type,
                 f_menu_id: m.f_menu_id,
                 auth_flag: m.auth_flag,
                 menu_name: m.menu_name,
                 menu_path: m.menu_path,
                 menu_icon: m.menu_icon,
                 show_flag: m.show_flag,
+                domain_flag: m.domain_flag,
                 menu_index: m.menu_index
             })
         }
@@ -118,14 +121,8 @@ async function addAct(req, res) {
             common.sendError(res, 'menu_01');
             return
         } else {
-            let type;
-            if (doc.f_menu_id === '0') {
-                type = GLBConfig.MTYPE_ROOT
-            }else{
-                type = GLBConfig.MTYPE_LEAF
-            }
 
-            if (type === GLBConfig.MTYPE_LEAF) {
+            if (doc.menu_type === GLBConfig.MTYPE_LEAF) {
                 if (!doc.menu_path){
                     common.sendError(res, 'menu_04');
                     return
@@ -133,13 +130,14 @@ async function addAct(req, res) {
             }
 
             menu = await tb_menu.create({
-                type: type,
+                menu_type: doc.menu_type,
                 f_menu_id: doc.f_menu_id,
                 auth_flag: doc.auth_flag,
                 menu_name: doc.menu_name,
                 menu_path: doc.menu_path,
                 menu_icon: doc.menu_icon,
                 show_flag: doc.show_flag,
+                domain_flag: doc.domain_flag,
                 menu_index: doc.menu_index
             })
             common.sendData(res, menu);
@@ -154,13 +152,14 @@ async function modifyAct(req, res) {
         let doc = req.body;
         let menu = await tb_menu.findOne({
             where: {
-                id: doc.old.id
+                menu_id: doc.old.menu_id
             }
         });
         if (menu) {
             menu.menu_name = doc.new.menu_name
             menu.menu_path = doc.new.menu_path
             menu.menu_icon = doc.new.menu_icon
+            menu.domain_flag = doc.new.domain_flag
             menu.menu_index = doc.new.menu_index
             await menu.save()
             common.sendData(res, menu);
@@ -178,14 +177,14 @@ async function deleteAct(req, res) {
         let doc = req.body
         let menu = await tb_menu.findOne({
             where: {
-                id: doc.id
+                menu_id: doc.menu_id
             }
         });
 
         if (menu) {
             let menuCount = await tb_menu.count({
                 where: {
-                    f_menu_id: menu.id
+                    f_menu_id: menu.menu_id
                 }
             })
             if (menuCount > 0) {

@@ -1,11 +1,14 @@
 const fs = require('fs');
 const common = require('../../util/CommonUtil');
 const GLBConfig = require('../../util/GLBConfig');
-const logger = common.createLogger('GroupControlSRV');
+const Sequence = require('../../util/Sequence');
+const logger = require('../../util/Logger').createLogger('GroupControlSRV');
 const model = require('../../model');
 
 const tb_usergroup = model.usergroup
 const tb_user = model.user
+
+let groups = []
 
 exports.OperatorControlResource = (req, res) => {
     let method = req.query.method
@@ -28,32 +31,9 @@ async function initAct(req, res) {
     let returnData = {}
     let user = req.user;
 
-    let whereCase;
-    if (user.username === 'admin') {
-        whereCase = {
-            domain_id: user.domain_id
-        }
-    } else {
-        whereCase = {
-            domain_id: user.domain_id,
-            name: {
-                $ne: 'administrator'
-            }
-        }
-    }
-
-    let groups = await tb_usergroup.findAll({
-        where: whereCase
-    });
-
-    returnData.groupInfo = []
-    for (let g of groups) {
-        returnData.groupInfo.push({
-            id: g.id,
-            value: g.id,
-            text: g.name
-        })
-    }
+    groups = []
+    await genUserGroup(user.domain_id, '0', 0)
+    returnData.groupInfo = groups
 
     common.sendData(res, returnData)
 }
@@ -65,14 +45,15 @@ async function searchAct(req, res) {
         let returnData = {}
 
         let users = await tb_user.findAll({
-            attributes: ['id', 'usergroup_id', 'username', 'email', 'phone', 'name', 'gender', 'address', 'state', 'city', 'zipcode', 'type', 'created_at', 'updated_at'],
+            attributes: ['user_id', 'usergroup_id', 'username', 'email', 'phone', 'name', 'gender', 'address', 'state', 'city', 'zipcode', 'type', 'created_at', 'updated_at'],
             where: {
                 domain_id: user.domain_id,
                 state: GLBConfig.ENABLE,
-                username: {
-                    $ne: 'admin'
-                }
-            }
+                type: GLBConfig.TYPE_OPERATOR
+            },
+            order: [
+                ['created_at', 'DESC']
+            ]
         });
         common.sendData(res, users);
     } catch (error) {
@@ -86,9 +67,9 @@ async function addAct(req, res) {
         let doc = req.body
         let user = req.user
 
-        let usergroup = tb_usergroup.findOne({
+        let usergroup = await tb_usergroup.findOne({
             where: {
-                id: doc.usergroup_id
+                usergroup_id: doc.usergroup_id
             }
         });
 
@@ -104,6 +85,7 @@ async function addAct(req, res) {
                 return
             } else {
                 adduser = await tb_user.create({
+                    user_id: await Sequence.genUserID(),
                     domain_id: user.domain_id,
                     usergroup_id: doc.usergroup_id,
                     username: doc.username,
@@ -116,7 +98,7 @@ async function addAct(req, res) {
                     state: doc.state,
                     city: doc.city,
                     zipcode: doc.zipcode,
-                    type: usergroup.type
+                    type: usergroup.usergroup_type
                 });
                 delete adduser.password
                 common.sendData(res, adduser)
@@ -141,7 +123,7 @@ async function modifyAct(req, res) {
         let modiuser = await tb_user.findOne({
             where: {
                 domain_id: user.domain_id,
-                id: doc.old.id,
+                user_id: doc.old.user_id,
                 state: GLBConfig.ENABLE
             }
         });
@@ -156,6 +138,7 @@ async function modifyAct(req, res) {
             modiuser.state = doc.new.state
             modiuser.city = doc.new.city
             modiuser.zipcode = doc.new.zipcode
+            modiuser.usergroup_id = doc.new.usergroup_id
             await modiuser.save()
             delete modiuser.password
             common.sendData(res, modiuser)
@@ -178,7 +161,7 @@ async function deleteAct(req, res) {
         let deluser = await tb_user.findOne({
             where: {
                 domain_id: user.domain_id,
-                id: doc.id,
+                user_id: doc.user_id,
                 state: GLBConfig.ENABLE
             }
         });
@@ -195,5 +178,30 @@ async function deleteAct(req, res) {
     } catch (error) {
         common.sendFault(res, error)
         return
+    }
+}
+
+async function genUserGroup(domain_id, parentId, lev) {
+    let actgroups = await tb_usergroup.findAll({
+        where: {
+            domain_id: domain_id,
+            parent_id: parentId,
+            usergroup_type: GLBConfig.TYPE_OPERATOR
+        }
+    });
+    for (let g of actgroups) {
+        if (g.node_type === GLBConfig.MTYPE_ROOT) {
+            groups.push({
+                id: g.usergroup_id,
+                text: '--'.repeat(lev) + g.usergroup_name,
+                disabled: true
+            });
+            groups.concat(await genUserGroup(domain_id, g.usergroup_id, lev + 1));
+        } else {
+            groups.push({
+                id: g.usergroup_id,
+                text: '--'.repeat(lev) + g.usergroup_name
+            });
+        }
     }
 }

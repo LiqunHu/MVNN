@@ -29,3 +29,6 @@ frontEnd/public/static/dependencies/select2
 frontEnd/public/static/dependencies/store
 frontEnd/public/static/dependencies/tableexport.jquery.plugin
 frontEnd/public/static/dependencies/x-editable
+frontEnd/public/static/dependencies/parsleyjs
+frontEnd/public/static/dependencies/swiper
+frontEnd/public/static/dependencies/ztree

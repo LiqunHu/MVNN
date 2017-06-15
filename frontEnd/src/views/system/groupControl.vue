@@ -1,5 +1,5 @@
 <template>
-  <div>
+<div>
     <section class="content-header">
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> 系统管理</a></li>
@@ -10,154 +10,179 @@
       <div class="col-lg-12">
         <div class="box box-info">
           <div class="box-body">
-            <div id="toolbar" class="pull-right">
-              <div class="form-inline" role="form">
-                <div class="form-group">
+              <div class="form-inline">
                   <div class="form-group">
-                    <button id="addM" class="btn btn-info" v-on:click="addM">
-                      <i class="glyphicon glyphicon-plus"></i> 增加
-                    </button>
+                      <div class="form-group">
+                          <button id="addFolder" class="btn btn-primary" v-on:click="addNode('00', $event)">
+                            <i class="glyphicon glyphicon-plus"></i> 增加机构
+                          </button>
+                          <button id="addGroup" class="btn btn-primary" v-on:click="addNode('01', $event)">
+                            <i class="glyphicon glyphicon-plus"></i> 增加角色
+                          </button>
+                          <button id="editNode" class="btn btn-primary" v-on:click="editNode">
+                            <i class="glyphicon glyphicon-plus"></i> 编辑
+                          </button>
+                      </div>
                   </div>
-                </div>
               </div>
-            </div>
-            <table id="table"></table>
+              <ul id="tree" class="ztree"></ul>
           </div>
         </div>
       </div>
     </section>
-    <div class="modal fade" id="AddModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document" style="width: 300px;">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><i class="fa fa-pencil-square-o big-blue"></i>增加用户组</h4>
-          </div>
-          <div class="modal-body"  id="formA">
-            <div class="form-group" id="name">
-              <label>用户组名称</label>
-              <input class="form-control" v-model="nameA">
+    <div class="modal fade" id="AddModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="AddModalTitle"></h4>
+                </div>
+                <form @submit.prevent="submitNode" id="formA">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label id="AddModalLable">目录名称</label>
+                            <input class="form-control" v-model="nameA" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-fw fa-plus"></i>增加
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-              <label>用户组状态</label>
-              <select class="form-contro select2" multiple style="width:100%" id='stateA'>
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" v-on:click="addGp"><i class="fa fa-fw fa-plus"></i>增加</button>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+    <div class="modal fade" id="editNodeModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">编辑节点</h4>
+                </div>
+                <form @submit.prevent="doEditNode" id="formM">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>名称</label>
+                            <input class="form-control" v-model="nameA" data-parsley-required="true">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-fw fa-plus"></i>提交
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 <script>
 import $ from 'jquery'
-const common = require('commonFunc')
-const apiUrl = '/api/system/groupcontrol?method='
+const common = require('commonFunc');
+const apiUrl = '/api/system/groupcontrol?method=';
 
-export default {
-  data: function () {
-    return {
-      pagePara: '',
-      nameA: '',
-      oldRow: ''
-    }
-  },
-  name: 'groupControl',
-  mounted: function () {
-    let _self = this
-    let $table = $('#table')
-    function getData () {
-      _self.$http.post(apiUrl + 'search', {}).then((response) => {
-        let retdata = response.data.info
-        $table.bootstrapTable('load', {
-          data: retdata
-        })
-      }, (response) => {
-        // error callback
-        common.dealErrorCommon(_self, response)
-      })
-    }
-    function initTable () {
-      window.tableEvents = {
-        'click .tableDelete': function (e, value, row, index) {
-          common.rowDelete(_self, '用户组删除', apiUrl, row, 'id')
-        }
-      }
-      $table.bootstrapTable({
-        height: common.getTableHeight(),
-        columns: [
-          {
-            field: 'id',
-            visible: false
-          },
-          common.BTRowFormatEditable('name', '用户组名称'),
-          common.BTRowFormatEdSelect(_self, 'state', '用户组状态', 'statusInfo'),
-          common.actFormatter('act', common.operateFormatter, tableEvents)
-        ],
-        idField: 'id',
-        uniqueId: 'id',
-        toolbar: '#toolbar',
-        clickToSelect: true,
-        locale: 'zh-CN',
-        onEditableShown: function (field, row, $el, editable) {
-          _self.oldRow = $.extend(true, {}, row)
-        },
-        onEditableSave: function (field, row, oldValue, $el) {
-          common.rowModify(_self, apiUrl, row, 'id')
-        },
-        onRefresh: function () {
-          getData()
-        }
-      })
-      common.changeTableClass($table)
-    }
-
-    function initPage () {
-      _self.$http.post(apiUrl + 'init', {}).then((response) => {
-        let retData = response.data.info
-        _self.pagePara = $.extend(true, {}, retData)
-        common.initSelect2($('#stateA'), retData['statusInfo'])
-        initTable()
-        getData()
+function getData(_self) {
+    _self.$http.post(apiUrl + 'search', {}).then((response) => {
+        let zNodes = response.data.info;
+        let treeObj = $.fn.zTree.init($("#tree"), {}, zNodes);
+        treeObj.expandAll(true);
+        $('#formA').parsley()
+        $('#formM').parsley()
         common.reSizeCall()
         console.log('init success')
-      }, (response) => {
+    }, (response) => {
+        // error callback
         common.dealErrorCommon(_self, response)
-      })
-    }
+    });
+}
 
-    $(function () {
-      initPage()
-    })
-  },
-  methods: {
-    addM: function (event) {
-      this.nameA = ''
-      $('#stateA').val(null).trigger('change')
-      $('#AddModal').modal('show')
+export default {
+    data: function() {
+        return {
+            node_type: '',
+            actNode: {},
+            nameA: ''
+        }
     },
-    addGp: function (event) {
-      let _self = this
-      let workRow = {
-        'id': '',
-        'name': _self.nameA,
-        'state': $('#stateA').val()[0]
-      }
-      _self.$http.post(apiUrl + 'add', workRow).then((response) => {
-        let retData = response.data.info
-        $('#table').bootstrapTable('insertRow', { index: 0, row: retData })
-        _self.nameA = ''
-        $('#stateA').val(null).trigger('change')
-        common.dealSuccessCommon('增加成功')
-        console.log('add success')
-      }, (response) => {
-        common.dealErrorCommon(_self, response)
-      })
+    name: 'groupControl',
+    mounted: function() {
+        let _self = this;
+        $(function() {
+            getData(_self);
+        });
+    },
+    methods: {
+        addNode: function(node_type, event) {
+            let _self = this
+            let nodeObj = $.fn.zTree.getZTreeObj("tree").getSelectedNodes();
+            if (nodeObj && nodeObj.length > 0) {
+                if (nodeObj[0].node_type === '01') return alert("角色下不允许新增");
+                _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]));
+            } else return common.dealWarningCommon("请选择一个节点");
+
+            this.node_type = node_type; // 目录
+            this.nameA = '';
+            $('#formA').parsley().reset()
+            if (node_type === '00') {
+                $('#AddModalTitle').text('增加机构')
+                $('#AddModalLable').text('机构名称')
+            } else {
+                $('#AddModalTitle').text('增加角色')
+                $('#AddModalLable').text('角色名称')
+            }
+
+            $('#AddModal').modal('show')
+        },
+        submitNode: function(event) {
+            let _self = this;
+            if ($('#formA').parsley().isValid()) {
+                if (!_self.nameA) {
+                    return common.dealWarningCommon("请输入节点名称");
+                }
+                let workRow = {
+                    'usergroup_name': _self.nameA,
+                    'parent_id': _self.actNode.usergroup_id,
+                    'node_type': _self.node_type
+                };
+                _self.$http.post(apiUrl + 'add', workRow).then((response) => {
+                    getData(_self);
+                    console.log('add success')
+                }, (response) => {
+                    common.dealErrorCommon(_self, response)
+                });
+            }
+        },
+        editNode: function(event) {
+            let _self = this;
+            let nodeObj = $.fn.zTree.getZTreeObj("tree").getSelectedNodes();
+            if (nodeObj && nodeObj.length > 0)
+                _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]));
+            else return common.dealWarningCommon("请选择一个节点");
+            this.nameA = nodeObj[0].name;
+            $('#formM').parsley().reset()
+            $('#stateA').val(null).trigger('change');
+            $('#editNodeModal').modal('show');
+        },
+        doEditNode: function(event) {
+            let _self = this;
+            if ($('#formM').parsley().isValid()) {
+                let workRow = {
+                    'usergroup_id': _self.actNode.usergroup_id,
+                    'usergroup_name': _self.nameA
+                };
+                _self.$http.post(apiUrl + 'modify', workRow).then((response) => {
+                    common.dealSuccessCommon('修改成功');
+                    $('#editNodeModal').modal('hide');
+                    getData(_self);
+                    console.log('add success')
+                }, (response) => {
+                    common.dealErrorCommon(_self, response)
+                });
+            }
+        }
     }
-  }
 }
 </script>
 <style scoped>

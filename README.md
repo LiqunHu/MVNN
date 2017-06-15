@@ -1,29 +1,23 @@
-MVNN
-=========================
-This is a restful web project.<br/>
-Mysql + Vue2 + node + nginx Project.
-
-=========================
-
 Installation
 ------------
 You should have a docker environment. Then everything will be done. :)
+got docker from https://www.docker.com
 
 Usage
 -----
-docker to create database <br/>
-./database.sh
-mysql port 33306
-redis port 6379
+1.1st time init the project<br/>
+bash init.sh<br/>
+#mysql port 33306<br/>
+#redis port 6379<br/>
 
-export NODE_ENV=test # for set NODE_ENV<br/>
+2. When you reboot your computer. <br/>
+bash boot.sh<br/>
 
-server: npm install; npm run start<br/>
-web: cd frontEnd; cnpm install; npm run dev<br/>
-static link: cd public/dependencies; bash link.sh<br/>
+3. When control + c to stop the server. <br/>
+bash start.sh<br/>
 
-for db create:
-node init-db.js; node init-data.js
-
+#for webstorm <br/>
+#please add export NODE_ENV=test to .bash_profile
+#run the project with local node
 -----
 http://localhost you will have the web home.

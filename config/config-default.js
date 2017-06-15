@@ -1,17 +1,17 @@
 const config = {
-    // for mysql`
-    mysql: {
+    // for sequelize`
+    sequelize: {
         dialect: 'mysql',
-        database: 'test',
+        database: 'mvnndata',
         username: 'root',
         password: '123456',
-        host: 'localhost',
-        port: 33306
+        host: 'mvnndb',
+        port: 3306
     },
     redisCache: true,
     // for redis
     redis: {
-        host: 'localhost',
+        host: 'mvnnredis',
         port: 6379,
         opts: {}
     },
@@ -20,7 +20,7 @@ const config = {
         level: 'DEBUG',
         config: {
             "appenders": [{
-                "type": "clustered",
+                "type": "console",
                 "appenders": [{
                         "type": "dateFile",
                         "filename": "log/access.log",
@@ -41,7 +41,8 @@ const config = {
                             "filename": "log/errors.log"
                         }
                     }
-                ]
+                ],
+                replaceConsole: true
             }]
         }
     },
@@ -55,7 +56,8 @@ const config = {
     fileUrlBase: '/files/',
     // SECRET_KEY
     SECRET_KEY: 'zc7#_66#g%u2n$j_)j$-r(swt63d(2l%wc2y=wqt_m8kpy%04*',
-    TOKEN_AGE: 43200000 // 12 * 60 * 60 * 1000
+    TOKEN_AGE: 43200000, // 12 * 60 * 60 * 1000
+    MOBILE_TOKEN_AGE: 31536000000 // 365 * 24 * 60 * 60 * 1000
 };
 
 module.exports = config;

@@ -1,50 +1,39 @@
 const fs = require('fs');
 const common = require('../../util/CommonUtil');
 const GLBConfig = require('../../util/GLBConfig');
-const logger = common.createLogger('GroupControlSRV');
+const logger = require('../../util/Logger').createLogger('GroupControlSRV');
 const model = require('../../model');
 
 // tables
 const tb_usergroup = model.usergroup;
-const tb_user = model.user
+const tb_user = model.user;
 
 exports.GroupControlResource = (req, res) => {
-    let method = req.query.method
-    if (method === 'init') {
-        initAct(req, res);
-    } else if(method === 'search') {
+    let method = req.query.method;
+    if (method === 'search') {
         searchAct(req, res)
-    } else if(method === 'add') {
+    } else if (method === 'add') {
         addAct(req, res)
-    } else if(method === 'modify') {
+    } else if (method === 'modify') {
         modifyAct(req, res)
-    } else if(method === 'delete') {
+    } else if (method === 'delete') {
         deleteAct(req, res)
     } else {
         common.sendError(res, 'common_01');
     }
-}
-
-function initAct(req, res) {
-    let returnData = {}
-    returnData.statusInfo = GLBConfig.STSTUSINFO
-    common.sendData(res, returnData)
-}
+};
 
 async function searchAct(req, res) {
     try {
         let user = req.user;
-        let groups = await tb_usergroup.findAll({
-            where: {
-                domain_id: user.domain_id,
-                type: {
-                    $ne: GLBConfig.TYPE_ADMINISTRATOR
-                },
-                name: {
-                    $ne: 'administrator'
-                }
-            }
-        });
+        let groups = [{
+            usergroup_id: 0,
+            name: '总机构',
+            isParent: true,
+            node_type: GLBConfig.MTYPE_ROOT,
+            children: []
+        }];
+        groups[0].children = JSON.parse(JSON.stringify(await genUserGroup(user.domain_id, '0')));
         common.sendData(res, groups);
     } catch (error) {
         common.sendFault(res, error);
@@ -56,22 +45,14 @@ async function addAct(req, res) {
         let doc = req.body;
         let user = req.user;
 
-        let usergroup = await tb_usergroup.findOne({
-            where: {
-                domain_id: user.domain_id,
-                name: doc.name
-            }
-        });
-        if (usergroup) {
-            common.sendError(res, 'group_01');
-            return
-        } else {
-            usergroup = await tb_usergroup.create({
-                domain_id: user.domain_id,
-                name: doc.name,
-                type: GLBConfig.TYPE_OPERATORGROUP
-            })
-        }
+        let usergroup = await tb_usergroup.create({
+            domain_id: user.domain_id,
+            usergroup_name: doc.usergroup_name,
+            usergroup_type: GLBConfig.TYPE_OPERATOR,
+            node_type: doc.node_type,
+            parent_id: doc.parent_id
+        })
+
         common.sendData(res, usergroup);
     } catch (error) {
         common.sendFault(res, error);
@@ -80,22 +61,19 @@ async function addAct(req, res) {
 
 async function modifyAct(req, res) {
     try {
-        let doc = req.body
-        let user = req.user
+        let doc = req.body;
+        let user = req.user;
         let usergroup = await tb_usergroup.findOne({
             where: {
-                domain_id: user.domain_id,
-                name: doc.old.name
+                usergroup_id: doc.usergroup_id
             }
-        })
+        });
         if (usergroup) {
-            usergroup.name = doc.new.name
-            usergroup.state = doc.new.state
-            await usergroup.save()
+            usergroup.usergroup_name = doc.usergroup_name;
+            await usergroup.save();
             common.sendData(res, usergroup)
         } else {
-            common.sendError(res, 'group_02')
-            return
+            common.sendError(res, 'group_02');
         }
     } catch (error) {
         common.sendFault(res, error)
@@ -104,35 +82,69 @@ async function modifyAct(req, res) {
 
 async function deleteAct(req, res) {
     try {
-        let doc = req.body
-        let user = req.user
+        let doc = req.body;
+        let user = req.user;
         let usergroup = await tb_usergroup.findOne({
             where: {
                 domain_id: user.domain_id,
-                name: doc.name
+                usergroup_name: doc.usergroup_name
             }
-        })
+        });
 
         let usersCount = await tb_user.count({
             where: {
-                usergroup_id: usergroup.id
+                usergroup_id: usergroup.usergroup_id
             }
-        })
+        });
 
         if (usersCount > 0) {
-            common.sendError(res, 'group_03')
-            return
+            common.sendError(res, 'group_03');
+            return;
         }
 
         if (usergroup) {
             await usergroup.destroy();
-            common.sendData(res)
-            return
+            common.sendData(res);
         } else {
-            common.sendError(res, 'group_02')
-            return
+            common.sendError(res, 'group_02');
         }
     } catch (error) {
         common.sendFault(res, error)
     }
+}
+
+async function genUserGroup(domain_id, parentId) {
+    let return_list = [];
+    let groups = await tb_usergroup.findAll({
+        where: {
+            domain_id: domain_id,
+            parent_id: parentId,
+            usergroup_type: GLBConfig.TYPE_OPERATOR
+        }
+    });
+    for (let g of groups) {
+        let sub_group = [];
+        if (g.node_type === GLBConfig.MTYPE_ROOT) {
+            sub_group = await genUserGroup(domain_id, g.usergroup_id);
+            return_list.push({
+                usergroup_id: g.usergroup_id,
+                node_type: g.node_type,
+                usergroup_type: g.usergroup_type,
+                name: g.usergroup_name,
+                isParent: true,
+                parent_id: g.parent_id,
+                children: sub_group
+            });
+        } else {
+            return_list.push({
+                usergroup_id: g.usergroup_id,
+                node_type: g.node_type,
+                usergroup_type: g.usergroup_type,
+                name: g.usergroup_name,
+                isParent: false,
+                parent_id: g.parent_id,
+            });
+        }
+    }
+    return return_list;
 }

@@ -14,11 +14,14 @@ export default new VueRouter({
         { path: 'error',                  component: resolve => require(['./components/errpage'], resolve) },
         { path: 'error401',               component: resolve => require(['./components/err401'], resolve) },
         { path: 'home',                   component: resolve => require(['./views/home'], resolve) },
-        { path: 'userSetting',     component: resolve => require(['./views/system/userSetting'], resolve) },
+        { path: 'userSetting',            component: resolve => require(['./views/system/userSetting'], resolve) },
         { path: 'operatorControl',        component: resolve => require(['./views/system/operatorControl'], resolve) },
         { path: 'groupControl',           component: resolve => require(['./views/system/groupControl'], resolve) },
         { path: 'menuControl',            component: resolve => require(['./views/system/menuControl'], resolve) },
-        { path: 'groupMenuControl',       component: resolve => require(['./views/system/groupMenuControl'], resolve) }
+        { path: 'groupMenuControl',       component: resolve => require(['./views/system/groupMenuControl'], resolve) },
+        { path: 'domainControl',          component: resolve => require(['./views/system/domainControl'], resolve) },
+        { path: 'domainMenuControl',      component: resolve => require(['./views/system/domainMenuControl'], resolve) },
+        { path: 'resetPassword',          component: resolve => require(['./views/system/userResetPassword'], resolve) }
     ]},
     { path: '/example',           component: resolve => require(['./components/mainSystem'], resolve),
       children: [

@@ -1,5 +1,5 @@
 const common = require('../util/CommonUtil.js');
-const logger = common.createLogger('Authority.js');
+const logger = require('./Logger').createLogger('Authority.js');
 
 const model = require('../model');
 const Security = require('./Security');

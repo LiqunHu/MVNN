@@ -1,3 +1,5 @@
+const common = require('../util/CommonUtil.js');
+const logger = require('./Logger').createLogger('RedisClient.js');
 const bluebird = require("bluebird");
 const config = require('../config');
 const redis = require("redis");
@@ -10,7 +12,6 @@ const client = redis.createClient(config.redis.port, config.redis.host, config.r
  * @param key 缓存key
  * @param value 缓存value
  * @param expired 缓存的有效时长，单位秒
- * @param callback 回调函数
  */
 exports.setItem = async(key, value, expired) => {
     try {
@@ -20,7 +21,7 @@ exports.setItem = async(key, value, expired) => {
         }
         return null;
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return error;
     }
 };
@@ -28,17 +29,31 @@ exports.setItem = async(key, value, expired) => {
 /**
  * 获取缓存
  * @param key 缓存key
- * @param callback 回调函数
  */
 exports.getItem = async(key) => {
     try {
         let value = await client.getAsync(key);
         return JSON.parse(value);
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return null;
     }
 
+};
+
+/**
+ * 获取缓存
+ * @param key 缓存key
+ */
+exports.getLiveTime = (key) => {
+    return new Promise(function(resolve, reject) {
+        client.ttl(key, function (err, data){
+            if (err) {
+                reject(err);
+            }
+            resolve(data)
+        });
+    })
 };
 
 /**
@@ -50,9 +65,11 @@ exports.removeItem = async(key, callback) => {
     try {
         await client.delAsync(key);
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return error;
     }
 };
 
 exports.tokenExpired = parseInt(config.TOKEN_AGE / 1000);
+exports.mobileTokenExpired = parseInt(config.MOBILE_TOKEN_AGE / 1000);
+exports.SMSTokenExpired = 300;

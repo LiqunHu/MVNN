@@ -4,6 +4,6 @@
 <script>
 var common = require('commonFunc')
 </script>
-<style lang="less">
+<style>
 @import './assets/css/ui.css';
 </style>

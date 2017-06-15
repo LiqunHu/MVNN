@@ -1,6 +1,6 @@
 const CryptoJS = require('crypto-js')
 const common = require('../util/CommonUtil.js');
-const logger = common.createLogger('Security.js');
+const logger = require('./Logger').createLogger('Security.js');
 
 const RedisClient = require('../util/RedisClient');
 const model = require('../model');
@@ -29,9 +29,11 @@ exports.token2user = async(req) => {
             expires = tokensplit[2],
             sha1 = tokensplit[3]
 
-        if (parseInt(expires) < Date.now()) {
-            logger.error('expires');
-            return null;
+        if (magicNo != 'MOBILE'){
+            if (parseInt(expires) < Date.now()) {
+                logger.error('expires');
+                return null;
+            }
         }
 
         if (config.redisCache) {
@@ -151,9 +153,15 @@ exports.aesDecryptModeCFB = (msg, pwd, magicNo) => {
 
 exports.user2token = (user, identifyCode, magicNo) => {
     try {
-        let expires = Date.now() + config.TOKEN_AGE;
-        let s = [user.id, identifyCode, expires.toString(), config.SECRET_KEY].join('-');
-        let L = [user.id, magicNo, expires.toString(), CryptoJS.SHA1(s).toString()]
+        let expires = ''
+        if (magicNo === 'MOBILE'){
+            expires = Date.now() + config.MOBILE_TOKEN_AGE;
+        }else{
+            expires = Date.now() + config.TOKEN_AGE;
+        }
+
+        let s = [user.user_id, identifyCode, expires.toString(), config.SECRET_KEY].join('-');
+        let L = [user.user_id, magicNo, expires.toString(), CryptoJS.SHA1(s).toString()]
         return L.join('-')
     } catch (error) {
         logger.error(error);

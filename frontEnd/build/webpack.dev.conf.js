@@ -32,7 +32,7 @@ config.plugins = (config.plugins || []).concat([
   new HtmlWebpackPlugin({
     filename: 'index.html',
     template: 'src/index.ejs',
-    title: 'Test',
+    title: 'MVNN',
     minify: {
       removeComments: false,
       collapseWhitespace: false

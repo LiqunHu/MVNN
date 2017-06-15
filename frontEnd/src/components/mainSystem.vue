@@ -15,7 +15,6 @@ export default {
   name: 'mainSystem',
   components: { mainHeader, mainSidebar },
   mounted: function () {
-    require('../assets/js/app.js')
     require('../assets/js/init.js')
   }
 }

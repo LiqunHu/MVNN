@@ -20,3 +20,4 @@ rm -rf tableexport.jquery.plugin
 rm -rf cropper
 rm -rf crypto-js
 rm -rf ckeditor
+rm -rf ztree

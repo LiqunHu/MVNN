@@ -1,0 +1,21 @@
+#!/bin/sh
+rm -rf store;ln -s ../../../node_modules/store store
+rm -rf bootstrap;ln -s ../../../node_modules/bootstrap bootstrap
+rm -rf select2;ln -s ../../../node_modules/select2 select2
+rm -rf font-awesome;ln -s ../../../node_modules/font-awesome font-awesome
+rm -rf bootstrap-table;ln -s ../../../node_modules/bootstrap-table bootstrap-table
+rm -rf bootstrap-datepicker;ln -s ../../../node_modules/bootstrap-datepicker bootstrap-datepicker
+rm -rf bootstrap-daterangepicker;ln -s ../../../node_modules/bootstrap-daterangepicker bootstrap-daterangepicker
+rm -rf lightbox2;ln -s ../../../node_modules/lightbox2 lightbox2
+rm -rf jquery-slimscroll;ln -s ../../../node_modules/jquery-slimscroll jquery-slimscroll
+rm -rf x-editable;ln -s ../../../node_modules/x-editable x-editable
+rm -rf jquery-sparkline;ln -s ../../../node_modules/jquery-sparkline jquery-sparkline
+rm -rf fastclick;ln -s ../../../node_modules/fastclick fastclick
+rm -rf raphael;ln -s ../../../node_modules/raphael raphael
+rm -rf moment;ln -s ../../../node_modules/moment moment
+rm -rf tableexport.jquery.plugin;ln -s ../../../node_modules/tableexport.jquery.plugin tableexport.jquery.plugin
+rm -rf cropper;ln -s ../../../node_modules/cropper cropper
+rm -rf crypto-js;ln -s ../../../node_modules/crypto-js crypto-js
+rm -rf ckeditor;ln -s ../../../node_modules/ckeditor ckeditor
+rm -rf ztree;ln -s ../../../node_modules/ztree ztree
+rm -rf parsleyjs;ln -s ../../../node_modules/parsleyjs parsleyjs

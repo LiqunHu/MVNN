@@ -1,20 +1,14 @@
 const fs = require('fs');
 const common = require('../../util/CommonUtil');
 const GLBConfig = require('../../util/GLBConfig');
-const logger = require('../../util/Logger').createLogger('GroupMenuControlSRV');
+const logger = require('../../util/Logger').createLogger('DomainMenuControlSRV');
 const model = require('../../model');
 
-const tb_usergroup = model.usergroup;
-const tb_usergroupmenu = model.usergroupmenu
-const tb_menu = model.menu;
-const tb_domain = model.domain
+const tb_domain = model.domain;
 const tb_domainmenu = model.domainmenu
+const tb_menu = model.menu;
 
-let domain
-let dmenus = []
-let groups = []
-
-exports.GroupMenuControlResource = (req, res) => {
+exports.DomainMenuControlResource = (req, res) => {
     let method = req.query.method
     if (method === 'init') {
         initAct(req, res);
@@ -31,25 +25,20 @@ async function initAct(req, res) {
     let returnData = {}
     let user = req.user;
 
-    groups = []
-    await genUserGroup(user.domain_id, '0', 0)
-
-    returnData.groupInfo = groups
-
-    domain = await tb_domain.findOne({
+    let domains = await tb_domain.findAll({
         where: {
-            domain_id: user.domain_id
+            domain: {
+                $ne: 'admin'
+            }
         }
     });
 
-    let menus = await tb_domainmenu.findAll({
-        where: {
-            domain_id: user.domain_id,
-        }
-    });
-    dmenus = []
-    for (let dm of menus) {
-        dmenus.push(dm.menu_id)
+    returnData.domainInfo = []
+    for (let d of domains) {
+        returnData.domainInfo.push({
+            id: d.domain_id,
+            text: d.domain
+        })
     }
 
     returnData.menuInfo = await iterationMenu('0')
@@ -85,7 +74,7 @@ async function iterationMenu(fMenuID) {
             sub_menu = await iterationMenu(m.menu_id);
             return_list = return_list.concat(sub_menu)
         } else {
-            if (domain.domain === 'admin' || m.domain_flag == GLBConfig.FALSE || dmenus.indexOf(m.menu_id) > 0){
+            if (m.domain_flag === GLBConfig.TRUE) {
                 return_list.push({
                     menu_id: m.menu_id,
                     menu_type: m.menu_type,
@@ -106,15 +95,15 @@ async function searchAct(req, res) {
     try {
         let doc = req.body
         let returnData = {}
-        returnData.groupMenu = []
+        returnData.domainMenu = []
 
-        let groupmenus = await tb_usergroupmenu.findAll({
+        let domainmenus = await tb_domainmenu.findAll({
             where: {
-                usergroup_id: doc.usergroup_id
+                domain_id: doc.domain_id
             }
         });
-        for (let item of groupmenus) {
-            returnData.groupMenu.push(item.menu_id)
+        for (let item of domainmenus) {
+            returnData.domainMenu.push(item.menu_id)
         }
         common.sendData(res, returnData);
     } catch (error) {
@@ -127,53 +116,21 @@ async function modifyAct(req, res) {
     try {
         let doc = req.body
 
-        await tb_usergroupmenu.destroy({
+        await tb_domainmenu.destroy({
             where: {
-                usergroup_id: doc.usergroup_id
+                domain_id: doc.domain_id
             }
         })
 
-        for (let i = 0; i < doc.userGroupMenu.length; i++) {
-            await tb_usergroupmenu.create({
-                usergroup_id: doc.usergroup_id,
-                menu_id: doc.userGroupMenu[i].menu_id,
-                menu_type: doc.userGroupMenu[i].menu_type,
-                f_menu_id: doc.userGroupMenu[i].f_menu_id,
-                menu_name: doc.userGroupMenu[i].menu_name,
-                menu_path: doc.userGroupMenu[i].menu_path,
-                menu_icon: doc.userGroupMenu[i].menu_icon,
-                show_flag: doc.userGroupMenu[i].show_flag,
-                menu_index: doc.userGroupMenu[i].menu_index
+        for (let i = 0; i < doc.domainMenu.length; i++) {
+            await tb_domainmenu.create({
+                domain_id: doc.domain_id,
+                menu_id: doc.domainMenu[i].menu_id
             })
         }
         common.sendData(res)
     } catch (error) {
         common.sendFault(res, error)
         return null
-    }
-}
-
-async function genUserGroup(domain_id, parentId, lev) {
-    let actgroups = await tb_usergroup.findAll({
-        where: {
-            domain_id: domain_id,
-            parent_id: parentId,
-            usergroup_type: GLBConfig.TYPE_OPERATOR
-        }
-    });
-    for (let g of actgroups) {
-        if (g.node_type === GLBConfig.MTYPE_ROOT) {
-            groups.push({
-                id: g.usergroup_id,
-                text: '--'.repeat(lev) + g.usergroup_name,
-                disabled: true
-            });
-            groups.concat(await genUserGroup(domain_id, g.usergroup_id, lev + 1));
-        } else {
-            groups.push({
-                id: g.usergroup_id,
-                text: '--'.repeat(lev) + g.usergroup_name,
-            });
-        }
     }
 }

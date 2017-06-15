@@ -8,22 +8,31 @@ const favicon = require('express-favicon')
 const app = express()
 const compiler = webpack(config)
 
-let proxyTable = {
-    '/api': 'http://localhost:9090',
-    '/temp': 'http://localhost:9090',
-    '/files': 'http://localhost:9090'
+let proxyTable
+if (process.env.NODE_ENV === 'test') {
+    proxyTable = {
+       '/api': 'http://localhost:9090',
+       '/temp': 'http://localhost:9090',
+       '/files': 'http://localhost:9090'
+   }
+} else {
+    proxyTable = {
+       '/api': 'http://mvnnserver:9090',
+       '/temp': 'http://mvnnserver:9090',
+       '/files': 'http://mvnnserver:9090'
+   }
 }
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
-  let options = proxyTable[context]
-  if (typeof options === 'string') {
-    options = {
-      target: options,
-      // changeOrigin: true
+    let options = proxyTable[context]
+    if (typeof options === 'string') {
+        options = {
+            target: options,
+            // changeOrigin: true
+        }
     }
-  }
-  app.use(proxyMiddleware(context, options))
+    app.use(proxyMiddleware(context, options))
 })
 
 // 设置资源目录
@@ -35,18 +44,18 @@ app.use(require('connect-history-api-fallback')())
 
 // serve webpack bundle output
 app.use(require('webpack-dev-middleware')(compiler, {
-  noInfo: true,
-  publicPath: config.output.publicPath
+    noInfo: true,
+    publicPath: config.output.publicPath
 }))
 
 // enable hot-reload and state-preserving
 // compilation error display
 app.use(require('webpack-hot-middleware')(compiler))
 
-app.listen(8000, '0.0.0.0', function(err) {
-  if (err) {
-    console.log(err)
-    return
-  }
-  console.log('Listening at http://127.0.0.1:8000')
+app.listen(8000, '0.0.0.0', function (err) {
+    if (err) {
+        console.log(err)
+        return
+    }
+    console.log('Listening at http://127.0.0.1:8000')
 })

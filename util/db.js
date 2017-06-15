@@ -5,32 +5,30 @@ const uuid = require('uuid');
 const config = require('../config');
 
 const common = require('./CommonUtil.js');
-const logger = common.createLogger('db');
+const logger = require('./Logger').createLogger('db.js');
 
 logger.debug('init sequelize...');
 
-let sequelize = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
-    host: config.mysql.host,
-    port: config.mysql.port,
-    dialect: config.mysql.dialect,
+let sequelize = new Sequelize(config.sequelize.database, config.sequelize.username, config.sequelize.password, {
+    host: config.sequelize.host,
+    port: config.sequelize.port,
+    dialect: config.sequelize.dialect,
     pool: {
         max: 5, // max
         min: 0, // min
         idle: 10000 //10 seconds
+    },
+    logging: function(sql) {
+        logger.debug(sql);
     }
 });
 
-const ID_TYPE = Sequelize.BIGINT;
+const ID_TYPE = Sequelize.STRING(30);
+const IDNO_TYPE = Sequelize.BIGINT;
 
 function defineModel(name, attributes, params) {
     let attrs = {};
     let tbpara = arguments[2] ? arguments[2] : {};
-
-    attrs.id = {
-        type: ID_TYPE,
-        autoIncrement: true,
-        primaryKey: true
-    };
 
     for (let key in attributes) {
         let value = attributes[key];
@@ -95,7 +93,7 @@ function defineModel(name, attributes, params) {
     }, tbpara));
 }
 
-const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATEONLY', 'BOOLEAN'];
+const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATEONLY', 'DATE', 'BOOLEAN'];
 
 let exp = {
     defineModel: defineModel,
@@ -116,5 +114,7 @@ for (let type of TYPES) {
 }
 
 exp.ID = ID_TYPE;
+exp.IDNO = IDNO_TYPE;
+exp.sequelize = sequelize;
 
 module.exports = exp;

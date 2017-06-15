@@ -1,7 +1,7 @@
 const fs = require('fs');
 const common = require('../../util/CommonUtil');
 const GLBConfig = require('../../util/GLBConfig');
-const logger = common.createLogger('UserSettingSRV');
+const logger = require('../../util/Logger').createLogger('UserSettingSRV');
 const model = require('../../model');
 
 const tb_user = model.user
@@ -30,7 +30,7 @@ async function setpwdAct(req, res) {
 
     let modiuser = await tb_user.findOne({
         where: {
-            id: user.id,
+            user_id: user.user_id,
             state: GLBConfig.ENABLE
         }
     });
@@ -52,7 +52,7 @@ async function modifyAct(req, res) {
 
         let modiuser = await tb_user.findOne({
             where: {
-                id: user.id,
+                user_id: user.user_id,
                 state: GLBConfig.ENABLE
             }
         });
